@@ -1,0 +1,97 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+        http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ca.wasabistudio</groupId>
+    <artifactId>ca.wasabistudio.ca</artifactId>
+    <version>1.0.0.SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <name>wasabi studio chat system</name>
+    <url>http://www.wasabistudio.ca</url>
+
+    <scm>
+        <connection>scm:svn:http://www.wasabistudio.ca/chat/svn</connection>
+        <developerConnection>scm:svn:http://www.wasabistudio.ca/chat/svn</developerConnection>
+        <tag>HEAD</tag>
+        <url>http://www.wasabistudio.ca/chat/svn</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>wasabi</id>
+            <name>wasabi</name>
+            <url>http://www.bradchen.com</url>
+            <organization>wasabi studio</organization>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+        <developer>
+            <id>moneycash</id>
+            <name>moneycash</name>
+            <organization>wasabi studio</organization>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>-7</timezone>
+        </developer>
+    </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <compilerVersion>1.6</compilerVersion>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.3.148</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>5.14</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
