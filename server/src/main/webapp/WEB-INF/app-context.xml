@@ -6,17 +6,14 @@
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <!-- Spring JPA Support -->
-
-    <bean id="entityManagerFactory"
-        class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
-        <property name="persistenceUnitName" value="chat" />
-    </bean>
+    <bean id="entityManagerRegistry"
+        class="ca.wasabistudio.chat.rs.EntityManagerRegistry"
+        init-method="initialize" destroy-method="destroy" />
 
     <!-- REST Services -->
 
     <bean id="clientService"
-        class="ca.wasabistudio.chat.rs.ClientResource">
-        <property name="entityManagerFactory" ref="entityManagerFactory" />
-    </bean>
+        class="ca.wasabistudio.chat.rs.ClientResource"
+        init-method="initialize" destroy-method="destroy"
+        scope="prototype" />
 </beans>
