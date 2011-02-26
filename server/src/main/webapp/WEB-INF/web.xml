@@ -24,6 +24,17 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!-- AJAX Access Control -->
+
+    <filter>
+        <filter-name>ajaxAccessControl</filter-name>
+        <filter-class>ca.wasabistudio.chat.rs.AjaxAccessControlFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ajaxAccessControl</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <!-- RESTEasy Config -->
 
     <listener>
