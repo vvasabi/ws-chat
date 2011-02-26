@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="jquery-1.5.1.min.js"></script>
+    <script type="text/javascript" src="json2.js"></script>
+    <script type="text/javascript">
+    // <![CDATA[
+
+    var url = '';
+
+    // load config
+    jQuery(function() {
+      jQuery.ajax({
+        url: 'config.json',
+        success: function(data) {
+          url = data.url;
+
+          var message = '<strong>Url:</strong> ' + url;
+          jQuery('#status').html(message);
+        },
+        error: function(xhr) {
+          var message = 'Config loading failed: ' + xhr.status;
+          jQuery('#status').html(message);
+        },
+        dataType: 'json'
+      });
+
+      jQuery('#get-clients').click(function() {
+        jQuery.ajax({
+          url: url + 'client/list',
+          success: function(data) {
+            var container = jQuery('#clients');
+            container.empty();
+
+            var html = jQuery('<p />');
+            html.append('<strong>Client Count:</strong> ' + data.length);
+            container.append(html);
+
+            for (var i in data) {
+              var client = data[i];
+              var html = jQuery('<p />');
+              html.append('<strong>Username:</strong> ' + client.username);
+              html.append('<br />');
+              html.append('<strong>Status:</strong> ' + client.status);
+              html.append('<br />');
+
+              var lastSync = new Date(client.lastSync * 1000);
+              html.append('<strong>Last Sync:</strong> ' + lastSync);
+              html.append('<br />');
+
+              var entered = new Date(client.enterTime * 1000);
+              html.append('<strong>Entered:</strong> ' + entered);
+              container.append(html);
+            }
+          },
+          error: function(xhr, textStatus) {
+            var message = 'Config loading failed: ' + textStatus;
+            jQuery('#clients').html(message);
+          },
+          dataType: 'json'
+        });
+      });
+
+      jQuery('#add-client').click(function() {
+        var client = {
+          username: jQuery('#client-username').val(),
+          status: jQuery('#client-status').val()
+        };
+        jQuery('#client-username').val('');
+        jQuery('#client-status').val('');
+        var data = JSON.stringify(client);
+        jQuery.ajax({
+          contentType: 'application/json',
+          type: 'POST',
+          url: url + 'client/add',
+          success: function() {
+            jQuery('#add-status').text('Success!');
+          },
+          error: function(xhr, textStatus) {
+            var message = 'Error occurred: ' + textStatus;
+            jQuery('#add-status').text(message);
+          },
+          data: data
+        });
+      });
+    });
+
+    // ]]>
+    </script>
+  </head>
+  <body>
+    <h1>Chat Dev Tool</h1>
+
+    <p id="status">Loading...</p>
+
+    <h2>Clients</h2>
+
+    <div id="clients"></div>
+
+    <p>
+      <input id="get-clients" type="button" value="Get Clients" />
+    </p>
+
+    <h2>Add Client</h2>
+
+    <p id="add-status"></p>
+
+    <dl>
+      <dt>Client Username</dt>
+      <dd><input id="client-username" type="text" /></dd>
+
+      <dt>Client Status</dt>
+      <dd><input id="client-status" type="text" /></dd>
+    </dl>
+
+    <input id="add-client" type="button" value="Add Client" />
+  </body>
+</html>
