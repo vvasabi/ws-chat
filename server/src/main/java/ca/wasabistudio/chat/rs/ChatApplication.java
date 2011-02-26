@@ -11,9 +11,7 @@ public class ChatApplication extends Application {
 
 	static {
 		classes = new HashSet<Class<?>>();
-		classes.add(RoomResource.class);
 		classes.add(ClientResource.class);
-		classes.add(MessageResource.class);
 	}
 
 	public Set<Class<?>> getClasses() {

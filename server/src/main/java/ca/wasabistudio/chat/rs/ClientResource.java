@@ -14,24 +14,27 @@ import ca.wasabistudio.ca.dto.ClientDTO;
 import ca.wasabistudio.chat.entity.Client;
 
 @Path("/client")
-public class ClientResource extends Resource {
+public class ClientResource {
+
+	private EntityManager em;
+
+	public void setEntityManagerFactory(EntityManagerFactory emf) {
+		em = emf.createEntityManager();
+	}
 
 	@GET
 	@Path("/list")
 	@Produces("application/json")
 	@SuppressWarnings("unchecked")
 	public List<ClientDTO> getClients() {
-		List<ClientDTO> result = new ArrayList<ClientDTO>();
-		EntityManagerFactory emf = getEntityManagerFactory();
-		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
+		List<ClientDTO> result = new ArrayList<ClientDTO>();
 		List<Client> clients = em.createQuery("SELECT c from Client c")
 			.getResultList();
 		for (Client client : clients) {
 			result.add(new ClientDTO(client));
 		}
 		em.getTransaction().commit();
-		em.close();
 		return result;
 	}
 
@@ -39,14 +42,11 @@ public class ClientResource extends Resource {
 	@Path("/add")
 	@Produces("application/json")
 	public ClientDTO addClient(ClientDTO dto) {
-		EntityManagerFactory emf = getEntityManagerFactory();
-		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 		Client client = new Client(dto.getUsername());
 		client.setStatus(dto.getStatus());
 		em.persist(client);
 		em.getTransaction().commit();
-		em.close();
 		return dto;
 	}
 
