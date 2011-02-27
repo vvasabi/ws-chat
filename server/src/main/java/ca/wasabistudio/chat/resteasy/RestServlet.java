@@ -55,6 +55,9 @@ public class RestServlet extends HttpServlet {
     @Override
     public void service(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
+        // for whatever reason, headers need to be set twice to ensure that they
+        // will get printed all the time
+        setAccessControlHeaders(response);
         resteasyServlet.service(request, response);
         setAccessControlHeaders(response);
     }
@@ -62,13 +65,13 @@ public class RestServlet extends HttpServlet {
     private void setAccessControlHeaders(HttpServletResponse response)
             throws IOException {
         if (allowOrigin != null) {
-            response.addHeader(AccessControlAllowOrigin, allowOrigin);
+            response.setHeader(AccessControlAllowOrigin, allowOrigin);
         }
         if (allowMethods != null) {
-            response.addHeader(AccessControlAllowMethods, allowMethods);
+            response.setHeader(AccessControlAllowMethods, allowMethods);
         }
         if (allowHeaders != null) {
-            response.addHeader(AccessControlAllowHeaders, allowHeaders);
+            response.setHeader(AccessControlAllowHeaders, allowHeaders);
         }
     }
 
