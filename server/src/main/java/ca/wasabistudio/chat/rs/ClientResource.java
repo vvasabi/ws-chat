@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,8 +18,8 @@ public class ClientResource {
 
     private EntityManager em;
 
-    public void initialize() {
-        em = EntityManagerRegistry.instance().getEntityManager();
+    public void setEntityManagerFactory(EntityManagerFactory emf) {
+        em = emf.createEntityManager();
     }
 
     public void destroy() {

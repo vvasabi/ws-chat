@@ -14,16 +14,17 @@
         <param-value>/WEB-INF/app-context.xml</param-value>
     </context-param>
 
-    <!-- AJAX Access Control -->
+    <listener>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+        </listener-class>
+    </listener>
 
-    <filter>
-        <filter-name>ajaxAccessControl</filter-name>
-        <filter-class>ca.wasabistudio.chat.rs.AjaxAccessControlFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>ajaxAccessControl</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+    <listener>
+        <listener-class>
+            org.springframework.web.context.request.RequestContextListener
+        </listener-class>
+    </listener>
 
     <!-- RESTEasy Config -->
 
@@ -33,25 +34,33 @@
         </listener-class>
     </listener>
 
-    <listener>
-        <listener-class>
-            org.jboss.resteasy.plugins.spring.SpringContextLoaderListener
-        </listener-class>
-    </listener>
-
     <servlet>
-        <servlet-name>Resteasy</servlet-name>
+        <servlet-name>RestServlet</servlet-name>
         <servlet-class>
-            org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
+            ca.wasabistudio.chat.resteasy.RestServlet
         </servlet-class>
         <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
-            <param-value>ca.wasabistudio.chat.rs.ChatApplication</param-value>
+            <param-name>beans</param-name>
+            <param-value>
+                clientService
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>Access-Control-Allow-Origin</param-name>
+            <param-value>*</param-value>
+        </init-param>
+        <init-param>
+            <param-name>Access-Control-Allow-Methods</param-name>
+            <param-value>OPTIONS, GET, POST, PUT, DELETE</param-value>
+        </init-param>
+        <init-param>
+            <param-name>Access-Control-Allow-Headers</param-name>
+            <param-value>Content-Type, X-Requested-With</param-value>
         </init-param>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>Resteasy</servlet-name>
+        <servlet-name>RestServlet</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
 </web-app>
