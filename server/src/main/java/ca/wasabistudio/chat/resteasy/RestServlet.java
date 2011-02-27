@@ -55,8 +55,8 @@ public class RestServlet extends HttpServlet {
     @Override
     public void service(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
-        setAccessControlHeaders(response);
         resteasyServlet.service(request, response);
+        setAccessControlHeaders(response);
     }
 
     private void setAccessControlHeaders(HttpServletResponse response)
