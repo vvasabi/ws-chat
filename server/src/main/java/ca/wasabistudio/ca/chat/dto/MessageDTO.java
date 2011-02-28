@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import ca.wasabistudio.chat.entity.Client;
 import ca.wasabistudio.chat.entity.Message;
 
 public class MessageDTO {
