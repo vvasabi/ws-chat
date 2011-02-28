@@ -38,6 +38,8 @@ public class Room {
     @Access(AccessType.FIELD)
     private Set<Client> clients;
 
+    private Message lastMessage;
+
     Room() {
         this.key = "";
         this.title = "";
@@ -90,6 +92,18 @@ public class Room {
 
     public void addClient(Client client) {
         clients.add(client);
+
+        RoomSetting setting = new RoomSetting(client, this);
+        setting.setLastMessage(getLastMessage());
+        client.addRoomSetting(setting);
+    }
+
+    public Message getLastMessage() {
+        return lastMessage;
+    }
+
+    public void setLastMessage(Message message) {
+        lastMessage = message;
     }
 
 }

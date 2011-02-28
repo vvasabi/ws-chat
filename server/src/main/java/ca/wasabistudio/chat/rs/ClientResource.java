@@ -1,6 +1,5 @@
 package ca.wasabistudio.chat.rs;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,7 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import ca.wasabistudio.ca.dto.ClientDTO;
+import ca.wasabistudio.ca.chat.dto.ClientDTO;
 import ca.wasabistudio.chat.entity.Client;
 
 @Path("/client")
@@ -32,14 +31,10 @@ public class ClientResource {
     @SuppressWarnings("unchecked")
     public List<ClientDTO> getClients() {
         em.getTransaction().begin();
-        List<ClientDTO> result = new ArrayList<ClientDTO>();
-        List<Client> clients = em.createQuery("SELECT c from Client c")
+        List<Client> clients = em.createQuery("select c from Client c")
             .getResultList();
-        for (Client client : clients) {
-            result.add(new ClientDTO(client));
-        }
         em.getTransaction().commit();
-        return result;
+        return ClientDTO.toDTOs(clients);
     }
 
     @POST

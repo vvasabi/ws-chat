@@ -14,52 +14,61 @@ import javax.persistence.TemporalType;
 @Entity
 public class Message {
 
-	@Id
-	@GeneratedValue
-	@Access(AccessType.FIELD)
-	private int id;
+    @Id
+    @GeneratedValue
+    @Access(AccessType.FIELD)
+    private int id;
 
-	private String body;
+    private String body;
 
-	@ManyToOne
-	@Access(AccessType.FIELD)
-	private Client client;
+    @ManyToOne
+    @Access(AccessType.FIELD)
+    private Client client;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Access(AccessType.FIELD)
-	private Date createTime;
+    @ManyToOne
+    @Access(AccessType.FIELD)
+    private Room room;
 
-	Message() {
-		id = 0;
-		body = "";
-		client = null;
-		createTime = new Date();
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Access(AccessType.FIELD)
+    private Date createTime;
 
-	public Message(Client client, String body) {
-		this();
-		this.client = client;
-		this.body = body;
-	}
+    Message() {
+        id = 0;
+        body = "";
+        client = null;
+        createTime = new Date();
+    }
 
-	public int getId() {
-		return id;
-	}
+    public Message(Client client, Room room, String body) {
+        this();
+        this.client = client;
+        this.room = room;
+        this.body = body;
+    }
 
-	public String getBody() {
-		return body;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setBody(String body) {
-		this.body = body;
-	}
+    public String getBody() {
+        return body;
+    }
 
-	public Client getClient() {
-		return client;
-	}
+    public void setBody(String body) {
+        this.body = body;
+    }
 
-	public Date getCreateTime() {
-		return (Date)createTime.clone();
-	}
+    public Client getClient() {
+        return client;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public Date getCreateTime() {
+        return (Date)createTime.clone();
+    }
 
 }
