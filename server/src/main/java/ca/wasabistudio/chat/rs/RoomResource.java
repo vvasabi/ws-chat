@@ -9,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import ca.wasabistudio.ca.chat.dto.MessageDTO;
 import ca.wasabistudio.chat.entity.Client;
 import ca.wasabistudio.chat.entity.Message;
 import ca.wasabistudio.chat.entity.Room;
@@ -50,11 +51,11 @@ public class RoomResource {
         em.getTransaction().commit();
     }
 
-    @SuppressWarnings("unchecked")
     @GET
     @Path("/messages/{room}/{client}")
     @Produces("application/json")
-    public Message[] getMessages(@PathParam("room") String roomKey,
+    @SuppressWarnings("unchecked")
+    public MessageDTO[] getMessages(@PathParam("room") String roomKey,
             @PathParam("client") String username) {
         em.getTransaction().begin();
         Client client = getClient(username);
@@ -86,10 +87,13 @@ public class RoomResource {
                 .setParameter("id", setting.getLastMessage().getId())
                 .getResultList();
         }
-        Message last = messages.get(messages.size() - 1);
-        setting.setLastMessage(last);
+        if (messages.size() > 0) {
+            Message last = messages.get(messages.size() - 1);
+            setting.setLastMessage(last);
+        }
         em.getTransaction().commit();
-        return messages.toArray(new Message[messages.size()]);
+        List<MessageDTO> result = MessageDTO.toDTOs(messages);
+        return result.toArray(new MessageDTO[messages.size()]);
     }
 
     private Client getClient(String username) {
