@@ -2,9 +2,11 @@ package ca.wasabistudio.chat.rs;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import static org.testng.Assert.*;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -16,20 +18,23 @@ import ca.wasabistudio.chat.entity.Room;
 
 public class TestRoomResource {
 
+    private ApplicationContext context;
     private EntityManagerFactory emf;
 
     @BeforeMethod
     public void setup() {
-        String unit = "chat";
-        emf = Persistence.createEntityManagerFactory(unit);
+        String[] paths = new String[] {
+                "META-INF/spring-jpa.xml",
+                "META-INF/services.xml"
+        };
+        context = new ClassPathXmlApplicationContext(paths);
+        emf = context.getBean(EntityManagerFactory.class);
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         Client client = new Client("moneycash");
         em.persist(client);
-
         Room room = new Room("room");
         em.persist(room);
-
         em.getTransaction().commit();
         em.close();
     }
@@ -41,10 +46,8 @@ public class TestRoomResource {
 
     @Test
     public void testJoinRoom() {
-        RoomResource resource = new RoomResource();
-        resource.setEntityManagerFactory(emf);
+        RoomResource resource = context.getBean(RoomResource.class);
         resource.joinRoom("room", "moneycash");
-        resource.destroy();
 
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
@@ -59,10 +62,8 @@ public class TestRoomResource {
     @Test
     public void testGetMessages() {
         // join room first
-        RoomResource resource = new RoomResource();
-        resource.setEntityManagerFactory(emf);
+        RoomResource resource = context.getBean(RoomResource.class);
         resource.joinRoom("room", "moneycash");
-        resource.destroy();
 
         // add message
         EntityManager em = emf.createEntityManager();
@@ -75,11 +76,8 @@ public class TestRoomResource {
         em.close();
 
         // get messages now
-        resource = new RoomResource();
-        resource.setEntityManagerFactory(emf);
         MessageDTO[] messages = resource.getMessages("room", "moneycash");
         assertEquals(messages.length, 1);
-        resource.destroy();
     }
 
 }

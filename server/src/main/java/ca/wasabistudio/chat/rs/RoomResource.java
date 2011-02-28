@@ -3,13 +3,16 @@ package ca.wasabistudio.chat.rs;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import ca.wasabistudio.ca.chat.dto.MessageDTO;
+import ca.wasabistudio.ca.chat.dto.RoomDTO;
 import ca.wasabistudio.chat.entity.Client;
 import ca.wasabistudio.chat.entity.Message;
 import ca.wasabistudio.chat.entity.Room;
@@ -20,24 +23,30 @@ public class RoomResource {
 
     private EntityManager em;
 
-    public void setEntityManagerFactory(EntityManagerFactory emf) {
-        em = emf.createEntityManager();
+    @PersistenceContext
+    public void setEntityManager(EntityManager em) {
+        this.em = em;
     }
 
-    public void destroy() {
-        em.close();
+    @GET
+    @Path("/list")
+    @Produces("application/json")
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<RoomDTO> getRooms() {
+        List<Room> rooms = em.createQuery("select r from Room r")
+            .getResultList();
+        return RoomDTO.toDTOs(rooms);
     }
 
     @GET
     @Path("/join/{room}/{client}")
     @Produces("application/json")
+    @Transactional
     public void joinRoom(@PathParam("room") String roomKey,
             @PathParam("client") String username) {
-        em.getTransaction().begin();
         Client client = getClient(username);
         if (client == null) {
-            em.getTransaction().commit();
-
             String message = "Client cannot be found.";
             throw new RequestErrorException(message);
         }
@@ -48,28 +57,23 @@ public class RoomResource {
         }
 
         room.addClient(client);
-        em.getTransaction().commit();
     }
 
     @GET
     @Path("/messages/{room}/{client}")
     @Produces("application/json")
+    @Transactional
     @SuppressWarnings("unchecked")
     public MessageDTO[] getMessages(@PathParam("room") String roomKey,
             @PathParam("client") String username) {
-        em.getTransaction().begin();
         Client client = getClient(username);
         if (client == null) {
-            em.getTransaction().commit();
-
             String message = "Client cannot be found.";
             throw new RequestErrorException(message);
         }
 
         Room room = getRoom(roomKey);
         if (room == null) {
-            em.getTransaction().commit();
-
             String message = "Room cannot be found.";
             throw new RequestErrorException(message);
         }
@@ -91,7 +95,6 @@ public class RoomResource {
             Message last = messages.get(messages.size() - 1);
             setting.setLastMessage(last);
         }
-        em.getTransaction().commit();
         List<MessageDTO> result = MessageDTO.toDTOs(messages);
         return result.toArray(new MessageDTO[messages.size()]);
     }
