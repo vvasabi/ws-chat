@@ -12,36 +12,38 @@ import org.testng.annotations.Test;
 
 public class TestRoom {
 
-	EntityManagerFactory emf;
-	EntityManager em;
+    EntityManagerFactory emf;
+    EntityManager em;
 
-	@BeforeMethod
-	public void setup() {
-		String unit = "chat";
-		emf = Persistence.createEntityManagerFactory(unit);
-		em = emf.createEntityManager();
+    @BeforeMethod
+    public void setup() {
+        String unit = "chat";
+        emf = Persistence.createEntityManagerFactory(unit);
+        em = emf.createEntityManager();
 
-		em.getTransaction().begin();
-		Room room = new Room("room");
-		Client client = new Client("moneycash");
-		room.addClient(client);
-		em.persist(room);
-		em.getTransaction().commit();
-	}
+        em.getTransaction().begin();
+        Client client = new Client("moneycash");
+        em.persist(client);
 
-	@AfterMethod
-	public void tearDown() {
-		em.close();
-		emf.close();
-	}
+        Room room = new Room("room");
+        room.addClient(client);
+        em.persist(room);
+        em.getTransaction().commit();
+    }
 
-	@Test
-	public void testGetClients() {
-		em.getTransaction().begin();
-		Room room = (Room)em.find(Room.class, "room");
-		Client client = (Client)em.find(Client.class, "moneycash");
-		assertTrue(room.getClients().contains(client));
-		em.getTransaction().commit();
-	}
+    @AfterMethod
+    public void tearDown() {
+        em.close();
+        emf.close();
+    }
+
+    @Test
+    public void testGetClients() {
+        em.getTransaction().begin();
+        Room room = (Room)em.find(Room.class, "room");
+        Client client = (Client)em.find(Client.class, "moneycash");
+        assertTrue(room.getClients().contains(client));
+        em.getTransaction().commit();
+    }
 
 }
