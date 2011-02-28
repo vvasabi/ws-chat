@@ -45,6 +45,10 @@ public class RoomResource {
     @Transactional
     public void joinRoom(@PathParam("room") String roomKey,
             @PathParam("client") String username) {
+        if ("".equals(roomKey) || "".equals(username)) {
+            String message = "Room key or username cannot be empty.";
+            throw new RequestErrorException(message);
+        }
         Client client = getClient(username);
         if (client == null) {
             String message = "Client cannot be found.";
