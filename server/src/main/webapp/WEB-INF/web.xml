@@ -32,6 +32,13 @@
 
     <!-- RESTEasy Config -->
 
+    <context-param>
+        <param-name>resteasy.providers</param-name>
+        <param-value>
+            ca.wasabistudio.chat.rs.RequestErrorExceptionMapper
+        </param-value>
+    </context-param>
+
     <listener>
         <listener-class>
             org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap

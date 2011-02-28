@@ -40,6 +40,10 @@ public class ClientResource {
     @Produces("application/json")
     @Transactional
     public ClientDTO addClient(ClientDTO dto) {
+        if ("".equals(dto.getUsername())) {
+            String message = "Username cannot be empty.";
+            throw new RequestErrorException(message);
+        }
         Client client = new Client(dto.getUsername());
         client.setStatus(dto.getStatus());
         em.persist(client);
