@@ -91,11 +91,11 @@ public class Room {
     }
 
     public void addClient(Client client) {
-        clients.add(client);
-
         RoomSetting setting = new RoomSetting(client, this);
         setting.setLastMessage(getLastMessage());
         client.addRoomSetting(setting);
+
+        clients.add(client);
     }
 
     public Message getLastMessage() {
@@ -104,6 +104,23 @@ public class Room {
 
     public void setLastMessage(Message message) {
         lastMessage = message;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getKey().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Room) {
+            Room otherRoom = (Room)other;
+            if ("".equals(getKey()) || "".equals(otherRoom.getKey())) {
+                return super.equals(other);
+            }
+            return getKey().equals(otherRoom.getKey());
+        }
+        return false;
     }
 
 }

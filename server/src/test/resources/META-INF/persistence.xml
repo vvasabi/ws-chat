@@ -7,6 +7,7 @@
         <class>ca.wasabistudio.chat.entity.Client</class>
         <class>ca.wasabistudio.chat.entity.Message</class>
         <class>ca.wasabistudio.chat.entity.Room</class>
+        <class>ca.wasabistudio.chat.entity.RoomSetting</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver"

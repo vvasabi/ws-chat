@@ -4,27 +4,50 @@ import java.util.Date;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+@Entity
 public class RoomSetting {
+
+    @Id
+    @GeneratedValue
+    @Access(AccessType.FIELD)
+    private int id;
 
     private String status;
 
     private Message lastMessage;
 
+    @ManyToOne
+    @Access(AccessType.FIELD)
     private Client client;
 
+    @ManyToOne
+    @Access(AccessType.FIELD)
     private Room room;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Access(AccessType.FIELD)
     private Date enterTime;
 
+    RoomSetting() {
+        this.id = 0;
+        this.enterTime = new Date();
+    }
+
     public RoomSetting(Client client, Room room) {
+        this();
         this.client = client;
         this.room = room;
-        this.enterTime = new Date();
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getStatus() {

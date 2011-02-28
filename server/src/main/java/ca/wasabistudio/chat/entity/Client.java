@@ -27,11 +27,11 @@ public class Client {
     @Access(AccessType.FIELD)
     private Date lastSync;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.PERSIST)
     @Access(AccessType.FIELD)
     private Set<Message> messages;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @Access(AccessType.FIELD)
     private Set<RoomSetting> roomSettings;
 
@@ -87,6 +87,24 @@ public class Client {
 
     void addRoomSetting(RoomSetting setting) {
         roomSettings.add(setting);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getUsername().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Client) {
+            Client otherClient = (Client)other;
+            if ("".equals(getUsername()) ||
+                    "".equals(otherClient.getUsername())) {
+                return super.equals(other);
+            }
+            return getUsername().equals(otherClient.getUsername());
+        }
+        return false;
     }
 
 }
