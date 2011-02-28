@@ -1,4 +1,4 @@
-package ca.wasabistudio.ca.chat.dto;
+package ca.wasabistudio.chat.dto;
 
 import java.util.ArrayList;
 import java.util.Collection;

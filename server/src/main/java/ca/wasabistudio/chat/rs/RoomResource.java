@@ -11,8 +11,8 @@ import javax.ws.rs.Produces;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import ca.wasabistudio.ca.chat.dto.MessageDTO;
-import ca.wasabistudio.ca.chat.dto.RoomDTO;
+import ca.wasabistudio.chat.dto.MessageDTO;
+import ca.wasabistudio.chat.dto.RoomDTO;
 import ca.wasabistudio.chat.entity.Client;
 import ca.wasabistudio.chat.entity.Message;
 import ca.wasabistudio.chat.entity.Room;

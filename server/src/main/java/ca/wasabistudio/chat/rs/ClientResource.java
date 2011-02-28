@@ -11,7 +11,7 @@ import javax.ws.rs.Produces;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import ca.wasabistudio.ca.chat.dto.ClientDTO;
+import ca.wasabistudio.chat.dto.ClientDTO;
 import ca.wasabistudio.chat.entity.Client;
 
 @Path("/client")
