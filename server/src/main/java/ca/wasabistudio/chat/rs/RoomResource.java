@@ -1,6 +1,8 @@
 package ca.wasabistudio.chat.rs;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,6 +13,7 @@ import javax.ws.rs.Produces;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import ca.wasabistudio.chat.dto.ClientDTO;
 import ca.wasabistudio.chat.dto.MessageDTO;
 import ca.wasabistudio.chat.dto.RoomDTO;
 import ca.wasabistudio.chat.entity.Client;
@@ -37,6 +40,24 @@ public class RoomResource {
         List<Room> rooms = em.createQuery("select r from Room r")
             .getResultList();
         return RoomDTO.toDTOs(rooms);
+    }
+
+    @GET
+    @Path("/{room}/clients")
+    @Produces("application/json")
+    @Transactional
+    public Collection<ClientDTO> getRoomClients(@PathParam("room") String roomKey) {
+        if ("".equals(roomKey)) {
+            String message = "Room key cannot be empty.";
+            throw new RequestErrorException(message);
+        }
+        Room room = getRoom(roomKey);
+        if (room == null) {
+            String message = "Room cannot be found.";
+            throw new NotFoundException(message);
+        }
+        Set<Client> clients = room.getClients();
+        return ClientDTO.toDTOs(clients);
     }
 
     @GET
