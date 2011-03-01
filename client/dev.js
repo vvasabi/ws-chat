@@ -3,6 +3,7 @@ var pollInterval = 1500; // 1.5 seconds
 var currentRoom = '';
 var username = '';
 var refreshRequested = false;
+var session = '';
 
 // load config
 jQuery(function() {
@@ -13,7 +14,7 @@ jQuery(function() {
 
       var message = '<strong>Url:</strong> ' + url;
       jQuery('#status').html(message);
-      setInterval(pollUpdate, pollInterval);
+      setupSession();
     },
     error: function(xhr) {
       var message = 'Config loading failed: ' + xhr.status;
@@ -61,7 +62,7 @@ function createUser(username, success) {
   jQuery.ajax({
     contentType: 'application/json',
     type: 'POST',
-    url: url + 'client/join',
+    url: appendSession(url + 'client/join'),
     success: success,
     error: function(xhr, textStatus) {
       var message = 'Unable to join a room: ' + textStatus;
@@ -74,7 +75,7 @@ function createUser(username, success) {
 function joinRoom(roomKey, success) {
   jQuery.ajax({
     type: 'POST',
-    url: url + 'room/join/' + roomKey,
+    url: appendSession(url + 'room/join/' + roomKey),
     success: success,
     error: function(xhr, textStatus) {
       var message = 'Unable to join a room: ' + textStatus;
@@ -87,7 +88,7 @@ function sendMessage(roomKey, message) {
   jQuery.ajax({
     contentType: 'application/json',
     type: 'POST',
-    url: url + 'room/info/' + roomKey + '/messages',
+    url: appendSession(url + 'room/info/' + roomKey + '/messages'),
     success: function() {
       updateMessages();
       refreshRequested = true;
@@ -97,6 +98,26 @@ function sendMessage(roomKey, message) {
       jQuery('#messages').append('<p>' + message + '</p>');
     },
     data: JSON.stringify({ body: message })
+  });
+}
+
+function appendSession(url) {
+  return url + ';jsessionid=' + session;
+}
+
+function setupSession() {
+  jQuery.ajax({
+    type: 'GET',
+    url: url + 'client/session',
+    success: function(data) {
+      session = data;
+      setInterval(pollUpdate, pollInterval);
+    },
+    error: function(xhr) {
+      var message = 'Session setup failed: ' + xhr.status;
+      jQuery('#status').html(message);
+    },
+    dataType: 'text'
   });
 }
 
@@ -112,7 +133,7 @@ function pollUpdate() {
 function updateListOfRooms() {
   jQuery.ajax({
     type: 'GET',
-    url: url + 'room/list',
+    url: appendSession(url + 'room/list'),
     success: function(data) {
       var element = jQuery('#rooms');
       if (!data.length) {
@@ -143,7 +164,7 @@ function updateListOfClients() {
   }
   jQuery.ajax({
     type: 'GET',
-    url: url + 'room/info/' + currentRoom + '/clients',
+    url: appendSession(url + 'room/info/' + currentRoom + '/clients'),
     success: function(data) {
       var element = jQuery('#clients');
       if (!data.length) {
@@ -178,7 +199,7 @@ function updateMessages() {
   }
   jQuery.ajax({
     type: 'GET',
-    url: url + 'room/info/' + currentRoom + '/messages',
+    url: appendSession(url + 'room/info/' + currentRoom + '/messages'),
     success: function(data) {
       var element = jQuery('#messages');
       if (!data.length) {
@@ -190,7 +211,9 @@ function updateMessages() {
         message += new Date(data[i].createTime) + '</span>';
         element.append('<p>' + message + '</p>');
       }
-      element.scrollTop(element.innerHeight());
+      element.each(function() {
+        this.scrollTop = this.scrollHeight;
+      });
     },
     error: function() {
       var message = 'Message update failed. Will try again...';
