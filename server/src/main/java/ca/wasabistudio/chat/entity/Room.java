@@ -2,9 +2,7 @@ package ca.wasabistudio.chat.entity;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -38,7 +36,7 @@ public class Room {
     @ManyToMany
     @Access(AccessType.FIELD)
     @OrderBy("username")
-    private Set<Client> clients;
+    private List<Client> clients;
 
     private Message lastMessage;
 
@@ -48,7 +46,7 @@ public class Room {
         this.motd = "";
         this.createTime = new Date();
         this.messages = new ArrayList<Message>();
-        this.clients = new HashSet<Client>();
+        this.clients = new ArrayList<Client>();
     }
 
     public Room(String key) {
@@ -88,7 +86,7 @@ public class Room {
         messages.add(message);
     }
 
-    public Set<Client> getClients() {
+    public List<Client> getClients() {
         return clients;
     }
 

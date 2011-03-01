@@ -2,7 +2,6 @@ package ca.wasabistudio.chat.rs;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -56,7 +55,7 @@ public class RoomResource {
             String message = "Room cannot be found.";
             throw new NotFoundException(message);
         }
-        Set<Client> clients = room.getClients();
+        List<Client> clients = room.getClients();
         return ClientDTO.toDTOs(clients);
     }
 
