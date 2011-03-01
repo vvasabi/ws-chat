@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -36,6 +37,7 @@ public class Room {
 
     @ManyToMany
     @Access(AccessType.FIELD)
+    @OrderBy("username")
     private Set<Client> clients;
 
     private Message lastMessage;
