@@ -86,7 +86,7 @@ public class RoomResource {
     }
 
     @GET
-    @Path("/messages/{room}/{client}")
+    @Path("/messages/list/{room}/{client}")
     @Produces("application/json")
     @Transactional
     @SuppressWarnings("unchecked")
@@ -130,7 +130,7 @@ public class RoomResource {
     }
 
     @POST
-    @Path("/messages/{room}")
+    @Path("/messages/add/{room}")
     @Produces("application/json")
     @Transactional
     public void addMessage(@PathParam("room") String roomKey,
