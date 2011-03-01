@@ -1,6 +1,7 @@
 package ca.wasabistudio.chat.entity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -87,7 +88,7 @@ public class Room {
     }
 
     public List<Client> getClients() {
-        return clients;
+        return Collections.unmodifiableList(clients);
     }
 
     public void addClient(Client client) {
@@ -96,6 +97,14 @@ public class Room {
         client.addRoomSetting(setting);
 
         clients.add(client);
+    }
+
+    public void removeClient(Client client) {
+        if (!clients.contains(client)) {
+            return;
+        }
+        client.removeRoomSetting(this);
+        clients.remove(client);
     }
 
     public Message getLastMessage() {

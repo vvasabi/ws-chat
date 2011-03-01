@@ -38,6 +38,7 @@ public class TestCron {
         em.persist(client);
         Room room = new Room("room");
         em.persist(room);
+        room.addClient(client);
         em.getTransaction().commit();
         em.close();
     }
@@ -70,7 +71,8 @@ public class TestCron {
         em.getTransaction().begin();
         client = em.find(Client.class, "moneycash");
         Room room = em.find(Room.class, "room");
-        assertFalse(room.getClients().contains(client));
+        assertNull(client);
+        assertEquals(room.getClients().size(), 0);
         em.getTransaction().commit();
         em.close();
     }

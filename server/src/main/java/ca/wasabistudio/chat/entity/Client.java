@@ -89,6 +89,13 @@ public class Client {
         roomSettings.add(setting);
     }
 
+    void removeRoomSetting(Room room) {
+        RoomSetting setting = getRoomSetting(room);
+        if (setting != null) {
+            roomSettings.remove(setting);
+        }
+    }
+
     @Override
     public int hashCode() {
         return this.getUsername().hashCode();

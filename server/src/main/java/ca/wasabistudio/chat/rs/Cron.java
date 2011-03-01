@@ -29,13 +29,17 @@ public class Cron {
     public void run() {
         Calendar now = Calendar.getInstance();
         Date expired = new Date(now.getTimeInMillis() - TIMEOUT);
+        String query = "select c from Client c where c.lastSync < :time";
+        List<Client> clients = em.createQuery(query)
+            .setParameter("time", expired)
+            .getResultList();
         List<Room> rooms = em.createQuery("select r from Room r").getResultList();
-        for (Room room : rooms) {
-            for (Client client : room.getClients()) {
-                if (expired.compareTo(client.getLastSync()) < 0) {
-                    em.remove(client);
-                }
+        for (Client client : clients) {
+            for (Room room : rooms) {
+                em.remove(client.getRoomSetting(room));
+                room.removeClient(client);
             }
+            em.remove(client);
         }
     }
 
