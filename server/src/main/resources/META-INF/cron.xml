@@ -8,10 +8,10 @@
 
     <!-- Cron Jobs -->
 
-    <bean id="cron" class="ca.wasabistudio.chat.rs.Cron" />
+    <bean id="cron" class="ca.wasabistudio.chat.rs.Cron" scope="prototype" />
 
     <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="cron" />
+        <property name="targetBeanName" value="cron" />
         <property name="targetMethod" value="run" />
         <property name="concurrent" value="false" />
     </bean>
