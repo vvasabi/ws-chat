@@ -79,6 +79,7 @@ public class RoomResource {
         Room room = getRoom(roomKey);
         if (room == null) {
             room = new Room(roomKey);
+            em.persist(room);
         }
 
         room.addClient(client);
