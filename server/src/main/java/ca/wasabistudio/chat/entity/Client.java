@@ -31,7 +31,7 @@ public class Client {
     @Access(AccessType.FIELD)
     private Set<Message> messages;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @Access(AccessType.FIELD)
     private Set<RoomSetting> roomSettings;
 

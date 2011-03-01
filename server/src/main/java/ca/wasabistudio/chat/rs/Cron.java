@@ -36,7 +36,6 @@ public class Cron {
         List<Room> rooms = em.createQuery("select r from Room r").getResultList();
         for (Client client : clients) {
             for (Room room : rooms) {
-                em.remove(client.getRoomSetting(room));
                 room.removeClient(client);
             }
             em.remove(client);
