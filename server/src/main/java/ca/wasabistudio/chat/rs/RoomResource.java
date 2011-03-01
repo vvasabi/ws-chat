@@ -103,6 +103,8 @@ public class RoomResource {
             String message = "Room cannot be found.";
             throw new RequestErrorException(message);
         }
+
+        // acquire messages
         List<Message> messages;
         RoomSetting setting = client.getRoomSetting(room);
         Message lastMessage = setting.getLastMessage();
@@ -121,6 +123,10 @@ public class RoomResource {
             Message last = messages.get(messages.size() - 1);
             setting.setLastMessage(last);
         }
+
+        // mark that the client has sync'ed
+        client.sync();
+
         List<MessageDTO> result = MessageDTO.toDTOs(messages);
         return result.toArray(new MessageDTO[messages.size()]);
     }
