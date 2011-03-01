@@ -2,6 +2,7 @@ var url = '';
 var pollInterval = 1500; // 1.5 seconds
 var currentRoom = '';
 var username = '';
+var refreshRequested = false;
 
 // load config
 jQuery(function() {
@@ -21,39 +22,38 @@ jQuery(function() {
     dataType: 'json'
   });
 
-  jQuery('#join-room').click(function() {
+  jQuery('#join-form').submit(function() {
     var roomKey = jQuery('#room-key').val();
     username = jQuery('#client-username').val();
     if (!roomKey) {
       alert('Please enter the room to join.');
-      return;
+      return false;
     }
     if (!username) {
       alert('Please enter your username.');
     }
     createUser(username, function() {
-      joinRoom(roomKey, username, function(){
+      joinRoom(roomKey, function(){
         var message = 'Joined room successfully.';
         jQuery('#current-room .status').text(message);
 
         currentRoom = roomKey;
-        jQuery('#room-key').attr('disabled', 'disabled');
-        jQuery('#client-username').attr('disabled', 'disabled');
-        jQuery('#join-room').attr('disabled', 'disabled');
-        jQuery('#message').removeAttr('disabled');
-        jQuery('#send-button').removeAttr('disabled');
+        jQuery('#join-form input').attr('disabled', 'disabled');
+        jQuery('#send-message-form input').removeAttr('disabled');
       });
     });
+    return false;
   });
 
-  jQuery('#send-button').click(function() {
+  jQuery('#send-message-form').submit(function() {
     var message = jQuery('#message').val();
     if (!message) {
       alert('Please enter something that you would like to say.');
-      return;
+      return false;
     }
     jQuery('#message').val('');
-    sendMessage(currentRoom, username, message);
+    sendMessage(currentRoom, message);
+    return false;
   });
 });
 
@@ -61,7 +61,7 @@ function createUser(username, success) {
   jQuery.ajax({
     contentType: 'application/json',
     type: 'POST',
-    url: url + 'client/add',
+    url: url + 'client/join',
     success: success,
     error: function(xhr, textStatus) {
       var message = 'Unable to join a room: ' + textStatus;
@@ -71,10 +71,10 @@ function createUser(username, success) {
   });
 }
 
-function joinRoom(roomKey, username, success) {
+function joinRoom(roomKey, success) {
   jQuery.ajax({
-    type: 'GET',
-    url: url + 'room/join/' + roomKey + '/' + username,
+    type: 'POST',
+    url: url + 'room/join/' + roomKey,
     success: success,
     error: function(xhr, textStatus) {
       var message = 'Unable to join a room: ' + textStatus;
@@ -83,16 +83,20 @@ function joinRoom(roomKey, username, success) {
   });
 }
 
-function sendMessage(roomKey, username, message) {
+function sendMessage(roomKey, message) {
   jQuery.ajax({
     contentType: 'application/json',
     type: 'POST',
-    url: url + 'room/messages/add/' + roomKey,
+    url: url + 'room/info/' + roomKey + '/messages',
+    success: function() {
+      updateMessages();
+      refreshRequested = true;
+    },
     error: function(xhr, textStatus) {
       var message = 'Unable to send message: ' + textStatus;
       jQuery('#messages').append('<p>' + message + '</p>');
     },
-    data: JSON.stringify({ body: message, client: username  })
+    data: JSON.stringify({ body: message })
   });
 }
 
@@ -139,7 +143,7 @@ function updateListOfClients() {
   }
   jQuery.ajax({
     type: 'GET',
-    url: url + 'room/' + currentRoom + '/clients',
+    url: url + 'room/info/' + currentRoom + '/clients',
     success: function(data) {
       var element = jQuery('#clients');
       if (!data.length) {
@@ -168,9 +172,13 @@ function updateMessages() {
   if (!currentRoom) {
     return;
   }
+  if (refreshRequested) {
+    refreshRequested = false;
+    return;
+  }
   jQuery.ajax({
     type: 'GET',
-    url: url + 'room/messages/list/' + currentRoom + '/' + username,
+    url: url + 'room/info/' + currentRoom + '/messages',
     success: function(data) {
       var element = jQuery('#messages');
       if (!data.length) {
@@ -178,9 +186,11 @@ function updateMessages() {
       }
       for (var i in data) {
         var message = data[i].client + ": " + data[i].body;
-        message += ' &mdash; ' + (new Date(data[i].createTime * 1000));
+        message += ' <span class="date">&mdash; ';
+        message += new Date(data[i].createTime) + '</span>';
         element.append('<p>' + message + '</p>');
       }
+      element.scrollTop(element.innerHeight());
     },
     error: function() {
       var message = 'Message update failed. Will try again...';

@@ -6,6 +6,10 @@
     <script type="text/javascript" src="json2.js"></script>
     <script type="text/javascript" src="dev.js"></script>
     <style type="text/css">
+      body {
+        font: 1em/1em Gill Sans, Gill Sans MT, helvetica, sans-serif;
+      }
+    
       .message-box {
         border: 1px solid #444;
         height: 300px;
@@ -19,6 +23,11 @@
 
       #message {
         width: 300px;
+      }
+      
+      .date {
+        color: #888;
+        font-size: 0.75em;
       }
     </style>
   </head>
@@ -38,17 +47,19 @@
         Not in any room.
       </p>
 
-      <dl>
-        <dt>Room</dt>
-        <dd><input id="room-key" type="text" /></dd>
+      <form id="join-form">
+        <dl>
+          <dt>Room</dt>
+          <dd><input id="room-key" type="text" /></dd>
 
-        <dt>Username</dt>
-        <dd><input id="client-username" type="text" /></dd>
-      </dl>
+          <dt>Username</dt>
+          <dd><input id="client-username" type="text" /></dd>
+        </dl>
 
-      <p>
-        <input id="join-room" type="button" value="Join" />
-      </p>
+        <p>
+          <input type="submit" value="Join" />
+        </p>
+      </form>
     </div>
 
     <h2>Clients</h2>
@@ -59,11 +70,10 @@
 
     <div id="messages" class="message-box"></div>
 
-    <p>
+    <form id="send-message-form">
       Say something:
       <input id="message" type="text" disabled="disabled" />
-      <input id="send-button" type="button" value="Send"
-          disabled="disabled" />
-    </p>
+      <input type="submit" value="Send" disabled="disabled" />
+    </form>
   </body>
 </html>
