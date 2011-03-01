@@ -28,7 +28,7 @@ public class Cron {
     public void run() {
         Calendar time = Calendar.getInstance();
         long timeout = time.getTimeInMillis() - TIMEOUT;
-        String query = "select c from Client where lastSync < :time";
+        String query = "select c from Client c where c.lastSync < :time";
         List<Client> clients = em.createQuery(query)
             .setParameter("time", new Date(timeout))
             .getResultList();
