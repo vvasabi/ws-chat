@@ -1,4 +1,4 @@
-package ca.wasabistudio.chat.rs;
+package ca.wasabistudio.chat.support;
 
 @SuppressWarnings("serial")
 public class RequestErrorException extends RuntimeException {

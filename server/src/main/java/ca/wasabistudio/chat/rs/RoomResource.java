@@ -20,15 +20,38 @@ import ca.wasabistudio.chat.entity.Client;
 import ca.wasabistudio.chat.entity.Message;
 import ca.wasabistudio.chat.entity.Room;
 import ca.wasabistudio.chat.entity.RoomSetting;
+import ca.wasabistudio.chat.support.NotFoundException;
+import ca.wasabistudio.chat.support.RequestErrorException;
+import ca.wasabistudio.chat.support.Session;
+import ca.wasabistudio.chat.support.SessionExpiredException;
 
 @Path("/room")
 public class RoomResource {
 
     private EntityManager em;
+    private Session session;
 
     @PersistenceContext
     public void setEntityManager(EntityManager em) {
         this.em = em;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
+
+    @POST
+    @Path("/join/{room}")
+    @Produces("application/json")
+    @Transactional
+    public void joinRoom(@PathParam("room") String roomKey) {
+        Client client = getClient();
+        Room room = getRoom(roomKey);
+        if (room == null) {
+            room = new Room(roomKey);
+            em.persist(room);
+        }
+        room.addClient(client);
     }
 
     @GET
@@ -43,60 +66,27 @@ public class RoomResource {
     }
 
     @GET
-    @Path("/{room}/clients")
+    @Path("/info/{room}/clients")
     @Produces("application/json")
     @Transactional
-    public Collection<ClientDTO> getRoomClients(@PathParam("room") String roomKey) {
-        if ("".equals(roomKey)) {
-            String message = "Room cannot be empty.";
-            throw new RequestErrorException(message);
-        }
+    public Collection<ClientDTO> getClients(@PathParam("room") String roomKey) {
         Room room = getRoom(roomKey);
         if (room == null) {
             String message = "Room cannot be found.";
             throw new NotFoundException(message);
         }
+
         List<Client> clients = room.getClients();
         return ClientDTO.toDTOs(clients);
     }
 
     @GET
-    @Path("/join/{room}/{client}")
-    @Produces("application/json")
-    @Transactional
-    public void joinRoom(@PathParam("room") String roomKey,
-            @PathParam("client") String username) {
-        if ("".equals(roomKey) || "".equals(username)) {
-            String message = "Room or username cannot be empty.";
-            throw new RequestErrorException(message);
-        }
-        Client client = getClient(username);
-        if (client == null) {
-            String message = "Client cannot be found.";
-            throw new RequestErrorException(message);
-        }
-
-        Room room = getRoom(roomKey);
-        if (room == null) {
-            room = new Room(roomKey);
-            em.persist(room);
-        }
-
-        room.addClient(client);
-    }
-
-    @GET
-    @Path("/messages/list/{room}/{client}")
+    @Path("/info/{room}/messages")
     @Produces("application/json")
     @Transactional
     @SuppressWarnings("unchecked")
-    public MessageDTO[] getMessages(@PathParam("room") String roomKey,
-            @PathParam("client") String username) {
-        Client client = getClient(username);
-        if (client == null) {
-            throw new RequestErrorException("Client cannot be found.");
-        }
-
+    public MessageDTO[] getMessages(@PathParam("room") String roomKey) {
+        Client client = getClient();
         Room room = getRoom(roomKey);
         if (room == null) {
             throw new RequestErrorException("Room cannot be found.");
@@ -117,6 +107,8 @@ public class RoomResource {
                 .setParameter("id", setting.getLastMessage().getId())
                 .getResultList();
         }
+
+        // update last message sync'ed
         if (messages.size() > 0) {
             Message last = messages.get(messages.size() - 1);
             setting.setLastMessage(last);
@@ -130,40 +122,44 @@ public class RoomResource {
     }
 
     @POST
-    @Path("/messages/add/{room}")
+    @Path("/info/{room}/messages")
     @Produces("application/json")
     @Transactional
     public void addMessage(@PathParam("room") String roomKey,
             MessageDTO message) {
-        if ("".equals(roomKey)) {
-            throw new RequestErrorException("Room cannot be");
-        }
         if ("".equals(message.getBody())) {
             throw new RequestErrorException("Message body cannot be empty.");
         }
-        if ("".equals(message.getClient())) {
-            throw new RequestErrorException("Client username cannot be empty.");
-        }
 
+        Client client = getClient();
         Room room = getRoom(roomKey);
         if (room == null) {
             throw new RequestErrorException("Room cannot be found.");
         }
 
-        Client client = getClient(message.getClient());
-        if (client == null) {
-            throw new RequestErrorException("Client cannot be found.");
-        }
-
         Message result = new Message(client, room, message.getBody());
+        client.addMessage(result);
         room.addMessage(result);
     }
 
-    private Client getClient(String username) {
-        return (Client)em.find(Client.class, username);
+    private Client getClient() {
+        try {
+            Client client = em.merge(session.getClient());
+            if (client == null) {
+                throw new SessionExpiredException();
+            }
+            session.setClient(client);
+            return client;
+        } catch (IllegalArgumentException exception) {
+            throw new SessionExpiredException(exception);
+        }
     }
 
     private Room getRoom(String roomKey) {
+        if ((roomKey == null) || "".equals(roomKey)) {
+            String message = "Room cannot be empty.";
+            throw new RequestErrorException(message);
+        }
         return (Room)em.find(Room.class, roomKey);
     }
 

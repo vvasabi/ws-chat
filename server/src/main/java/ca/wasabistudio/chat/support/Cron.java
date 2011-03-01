@@ -1,4 +1,4 @@
-package ca.wasabistudio.chat.rs;
+package ca.wasabistudio.chat.support;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -10,6 +10,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import ca.wasabistudio.chat.entity.Client;
+import ca.wasabistudio.chat.entity.Message;
 import ca.wasabistudio.chat.entity.Room;
 
 public class Cron {
@@ -37,6 +38,9 @@ public class Cron {
         for (Client client : clients) {
             for (Room room : rooms) {
                 room.removeClient(client);
+            }
+            for (Message message : client.getMessages()) {
+                message.getRoom().removeMessage(message);
             }
             em.remove(client);
         }

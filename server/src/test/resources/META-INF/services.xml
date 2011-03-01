@@ -8,8 +8,14 @@
 
     <!-- REST Services -->
 
-    <bean id="clientService" class="ca.wasabistudio.chat.rs.ClientResource" />
+    <bean id="session" class="ca.wasabistudio.chat.support.Session" />
 
-    <bean id="roomService" class="ca.wasabistudio.chat.rs.RoomResource" />
+    <bean id="clientService" class="ca.wasabistudio.chat.rs.ClientResource">
+        <property name="session" ref="session" />
+    </bean>
+
+    <bean id="roomService" class="ca.wasabistudio.chat.rs.RoomResource">
+        <property name="session" ref="session" />
+    </bean>
 
 </beans>

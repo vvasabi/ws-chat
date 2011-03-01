@@ -15,6 +15,7 @@ import ca.wasabistudio.chat.dto.MessageDTO;
 import ca.wasabistudio.chat.entity.Client;
 import ca.wasabistudio.chat.entity.Message;
 import ca.wasabistudio.chat.entity.Room;
+import ca.wasabistudio.chat.support.Session;
 
 public class TestRoomResource {
 
@@ -34,6 +35,8 @@ public class TestRoomResource {
         Client client = new Client("moneycash");
         em.persist(client);
         Room room = new Room("room");
+        Session session = context.getBean(Session.class);
+        session.setClient(client);
         em.persist(room);
         em.getTransaction().commit();
         em.close();
@@ -47,7 +50,7 @@ public class TestRoomResource {
     @Test
     public void testJoinRoom() {
         RoomResource resource = context.getBean(RoomResource.class);
-        resource.joinRoom("room", "moneycash");
+        resource.joinRoom("room");
 
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
@@ -63,7 +66,7 @@ public class TestRoomResource {
     public void testGetMessages() {
         // join room first
         RoomResource resource = context.getBean(RoomResource.class);
-        resource.joinRoom("room", "moneycash");
+        resource.joinRoom("room");
 
         // add message
         EntityManager em = emf.createEntityManager();
@@ -76,7 +79,7 @@ public class TestRoomResource {
         em.close();
 
         // get messages now
-        MessageDTO[] messages = resource.getMessages("room", "moneycash");
+        MessageDTO[] messages = resource.getMessages("room");
         assertEquals(messages.length, 1);
     }
 

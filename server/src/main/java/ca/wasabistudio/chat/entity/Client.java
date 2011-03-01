@@ -27,7 +27,7 @@ public class Client {
     @Access(AccessType.FIELD)
     private Date lastSync;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @Access(AccessType.FIELD)
     private Set<Message> messages;
 
@@ -74,6 +74,10 @@ public class Client {
 
     public void addMessage(Message message) {
         messages.add(message);
+    }
+
+    public void removeMessage(Message message) {
+        messages.remove(message);
     }
 
     public RoomSetting getRoomSetting(Room room) {

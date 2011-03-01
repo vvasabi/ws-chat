@@ -87,6 +87,10 @@ public class Room {
         messages.add(message);
     }
 
+    public void removeMessage(Message message) {
+        messages.remove(message);
+    }
+
     public List<Client> getClients() {
         return Collections.unmodifiableList(clients);
     }

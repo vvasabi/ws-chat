@@ -36,7 +36,10 @@
     <context-param>
         <param-name>resteasy.providers</param-name>
         <param-value>
-            ca.wasabistudio.chat.rs.RequestErrorExceptionMapper
+            ca.wasabistudio.chat.support.AlreadyJoinedExceptionMapper,
+            ca.wasabistudio.chat.support.NotFoundExceptionMapper,
+            ca.wasabistudio.chat.support.RequestErrorExceptionMapper,
+            ca.wasabistudio.chat.support.SessionExpiredExceptionMapper
         </param-value>
     </context-param>
 

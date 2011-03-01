@@ -1,4 +1,4 @@
-package ca.wasabistudio.chat.rs;
+package ca.wasabistudio.chat.support;
 
 import static org.testng.Assert.*;
 
@@ -17,6 +17,7 @@ import org.testng.annotations.Test;
 
 import ca.wasabistudio.chat.entity.Client;
 import ca.wasabistudio.chat.entity.Room;
+import ca.wasabistudio.chat.support.Cron;
 
 public class TestCron {
 
