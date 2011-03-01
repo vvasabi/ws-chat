@@ -2,9 +2,12 @@ package ca.wasabistudio.chat.rs;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +30,13 @@ public class ClientResource {
 
     public void setSession(Session session) {
         this.session = session;
+    }
+
+    @GET
+    @Path("/session")
+    @Produces("application/json")
+    public String getSession(@Context HttpServletRequest request) {
+        return request.getSession().getId();
     }
 
     @POST
