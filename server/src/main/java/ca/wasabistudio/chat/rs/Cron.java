@@ -10,6 +10,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import ca.wasabistudio.chat.entity.Client;
+import ca.wasabistudio.chat.entity.Room;
 
 public class Cron {
 
@@ -26,14 +27,15 @@ public class Cron {
     @Transactional
     @SuppressWarnings("unchecked")
     public void run() {
-        Calendar time = Calendar.getInstance();
-        long timeout = time.getTimeInMillis() - TIMEOUT;
-        String query = "select c from Client c where c.lastSync < :time";
-        List<Client> clients = em.createQuery(query)
-            .setParameter("time", new Date(timeout))
-            .getResultList();
-        for (Client client : clients) {
-            em.remove(client);
+        Calendar now = Calendar.getInstance();
+        Date expired = new Date(now.getTimeInMillis() - TIMEOUT);
+        List<Room> rooms = em.createQuery("select r from Room r").getResultList();
+        for (Room room : rooms) {
+            for (Client client : room.getClients()) {
+                if (expired.compareTo(client.getLastSync()) < 0) {
+                    em.remove(client);
+                }
+            }
         }
     }
 
