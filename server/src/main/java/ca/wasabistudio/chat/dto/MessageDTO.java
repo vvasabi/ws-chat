@@ -14,6 +14,8 @@ public class MessageDTO {
 
     private Date createTime;
 
+    private String client;
+
     public MessageDTO() {
         body = "";
         createTime = new Date();
@@ -22,6 +24,7 @@ public class MessageDTO {
     public MessageDTO(Message message) {
         this.body = message.getBody();
         this.createTime = message.getCreateTime();
+        this.client = message.getClient().getUsername();
     }
 
     public String getBody() {
@@ -38,6 +41,14 @@ public class MessageDTO {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getClient() {
+        return client;
+    }
+
+    public void setClient(String client) {
+        this.client = client;
     }
 
     public static Collection<MessageDTO> toDTOs(Collection<Message> messages) {

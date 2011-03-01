@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -47,7 +48,7 @@ public class RoomResource {
     @Transactional
     public Collection<ClientDTO> getRoomClients(@PathParam("room") String roomKey) {
         if ("".equals(roomKey)) {
-            String message = "Room key cannot be empty.";
+            String message = "Room cannot be empty.";
             throw new RequestErrorException(message);
         }
         Room room = getRoom(roomKey);
@@ -66,7 +67,7 @@ public class RoomResource {
     public void joinRoom(@PathParam("room") String roomKey,
             @PathParam("client") String username) {
         if ("".equals(roomKey) || "".equals(username)) {
-            String message = "Room key or username cannot be empty.";
+            String message = "Room or username cannot be empty.";
             throw new RequestErrorException(message);
         }
         Client client = getClient(username);
@@ -93,14 +94,12 @@ public class RoomResource {
             @PathParam("client") String username) {
         Client client = getClient(username);
         if (client == null) {
-            String message = "Client cannot be found.";
-            throw new RequestErrorException(message);
+            throw new RequestErrorException("Client cannot be found.");
         }
 
         Room room = getRoom(roomKey);
         if (room == null) {
-            String message = "Room cannot be found.";
-            throw new RequestErrorException(message);
+            throw new RequestErrorException("Room cannot be found.");
         }
 
         // acquire messages
@@ -128,6 +127,36 @@ public class RoomResource {
 
         List<MessageDTO> result = MessageDTO.toDTOs(messages);
         return result.toArray(new MessageDTO[messages.size()]);
+    }
+
+    @POST
+    @Path("/messages/{room}")
+    @Produces("application/json")
+    @Transactional
+    public void addMessage(@PathParam("room") String roomKey,
+            MessageDTO message) {
+        if ("".equals(roomKey)) {
+            throw new RequestErrorException("Room cannot be");
+        }
+        if ("".equals(message.getBody())) {
+            throw new RequestErrorException("Message body cannot be empty.");
+        }
+        if ("".equals(message.getClient())) {
+            throw new RequestErrorException("Client username cannot be empty.");
+        }
+
+        Room room = getRoom(roomKey);
+        if (room == null) {
+            throw new RequestErrorException("Room cannot be found.");
+        }
+
+        Client client = getClient(message.getClient());
+        if (client == null) {
+            throw new RequestErrorException("Client cannot be found.");
+        }
+
+        Message result = new Message(client, room, message.getBody());
+        room.addMessage(result);
     }
 
     private Client getClient(String username) {
