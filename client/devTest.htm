@@ -1,0 +1,210 @@
+<html>
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Chat Room &bull; beta 3.0</title>
+    <script type="text/javascript" src="jquery-1.5.1.min.js"></script>
+    <script type="text/javascript" src="jquery.cookie.js"></script>
+    <script type="text/javascript" src="json2.js"></script>
+    <script type="text/javascript" src="dev.js"></script>
+    
+    <!-- Wasabi's house keeping -->
+    <style type="text/css">
+      body {
+        font: 1em/1em Gill Sans, Gill Sans MT, helvetica, sans-serif;
+      }
+    
+      .message-box {
+        border: 1px solid #444;
+        height: 300px;
+        padding: 10px;
+        overflow: scroll;
+      }
+
+      .message-box p {
+        margin: 5px 0;
+      }
+
+      #message {
+        width: 300px;
+      }
+      
+      .date {
+        color: #888;
+        font-size: 0.75em;
+      }
+    </style>
+    <!-- End of house kepping -->
+    
+    <!-- Madao's Tab -->
+    <Style type="text/css">
+    .tab-box-room 
+    { 
+        border-bottom: 1px solid #DDD;
+        padding-bottom:5px;
+    }
+    .tab-box-room a 
+    {
+        border:1px solid #DDD;
+        color:#666666;
+        padding: 5px 15px;
+        text-decoration:none;
+        background-color: #eee;
+    }
+    .tab-box-room a.activeLinkRoom 
+    { 
+        background-color: #fff; 
+        border-bottom: 0; 
+        padding: 6px 15px;
+    }
+    .tabcontentRoom 
+    { 
+        border: 1px solid #ddd; 
+        border-top: 0;
+    }
+    .hideRoom 
+    { 
+        display: none;
+    }
+    </Style>
+    <Style type="text/css">
+    .tab-box-setting 
+    { 
+        border-bottom: 1px solid #DDD;
+        padding-bottom:5px;
+    }
+    .tab-box-setting a 
+    {
+        border:1px solid #DDD;
+        color:#666666;
+        padding: 5px 15px;
+        text-decoration:none;
+        background-color: #eee;
+    }
+    .tab-box-setting a.activeLinkSetting 
+    { 
+        background-color: #fff; 
+        border-bottom: 0; 
+        padding: 6px 15px;
+    }
+    .tabcontentSetting 
+    { 
+        border: 1px solid #ddd; 
+        border-top: 0;
+    }
+    .hideSetting 
+    { 
+        display: none;
+    }
+    </Style>   
+    <!-- End of Tab -->
+  </head>
+
+<body>
+
+    <h1>Chat Dev Tool</h1>
+
+    <p id="status">Loading...</p>
+
+  <!-- Tab -->
+  
+  <!-- HTML -->
+    <div class="tab-box-room"> 
+        <a href="javascript:;" class="tabLinkRoom activeLinkRoom" id="cont-1">Lobby (test)</a>
+        <!--  
+        <a href="javascript:;" class="tabLink " id="cont-2">Room 2</a> 
+        <a href="javascript:;" class="tabLink " id="cont-3">Room 3</a> 
+        -->
+    </div>
+    
+    
+    <div class="tabcontent paddingAll" id="cont-1-1"> 
+        <h2>Lobby</h2>
+            <div id="messages" class="message-box"></div>
+    
+                <form id="send-message-form">
+                    <input id="message" type="text"  disabled="disabled"/>
+                    <input type="submit" value="Send"  disabled="disabled"/>
+                </form>
+    </div>
+            <div class="tab-box-setting">
+                <a href="javascript:;" class="tabLinkSetting activeLinkSetting" id="set-1">Setting</a>
+                <a href="javascript:;" class="tabLinkSetting" id="set-2">Clients</a>
+            </div>
+            <!-- Setting tab panel -->
+            <div class="tabcontentSetting paddingAll" id="set-1-1">
+                    <form id="join-form">
+                        <dl>
+                            <dt>Room</dt>
+                            <dd><input id="room-key" type="text" /></dd>
+
+                            <dt>Username</dt>
+                            <dd><input id="client-username" type="text" /></dd>
+                        </dl>
+
+                        <p>
+                            <input type="submit" value="Join" />
+                        </p>
+                    </form>
+            </div>
+  
+  
+            <div class="tabcontentSetting paddingAll hideSetting" id="set-2-1">
+                <h2>Clients</h2>
+                <div id="clients"></div>
+            </div>
+  <!-- End of setting tab panel -->  
+  
+  <!--
+  <div class="tabcontent paddingAll hide" id="cont-2-1"> 
+    Chat room number 2 
+  </div> 
+  
+  <div class="tabcontent paddingAll hide" id="cont-3-1"> 
+    Chat room number 3
+  </div>   
+  -->
+  <!-- End of HTML -->
+
+  
+  <!-- JavaScript -->
+  <script type="text/javascript">
+  $(document).ready(function() 
+  {
+    $(".tabLinkRoom").each(function()
+    {
+      $(this).click(function()
+      {
+        RoomId = $(this).attr('id');
+        $(".tabLinkRoom").removeClass("activeLinkRoom");
+        $(this).addClass("activeLinkRoom");
+        $(".tabcontentRoom").addClass("hideRoom");
+        $("#"+RoomId+"-1").removeClass("hideRoom")  
+        return false;	  
+      });
+    });  
+  });
+  
+  $(document).ready(function() 
+  {
+    $(".tabLinkSetting").each(function()
+    {
+      $(this).click(function()
+      {
+        SettingId = $(this).attr('id');
+        $(".tabLinkSetting").removeClass("activeLinkSetting");
+        $(this).addClass("activeLinkSetting");
+        $(".tabcontentSetting").addClass("hideSetting");
+        $("#"+SettingId+"-1").removeClass("hideSetting")  
+        return false;	  
+      });
+    });  
+  });
+  </script>
+  <!-- JavaScript -->
+  
+  
+  <!-- End Tab-->
+</body>
+
+</html>
