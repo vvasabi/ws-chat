@@ -42,6 +42,7 @@
     { 
         border-bottom: 1px solid #DDD;
         padding-bottom:5px;
+        width : 620px ;
     }
     .tab-box-room a 
     {
@@ -109,8 +110,10 @@
   <!-- Tab -->
   
   <!-- HTML -->
+  <table border=0 class="main" cellpadding=10>
+  <tr><td>
     <div class="tab-box-room"> 
-        <a href="javascript:;" class="tabLinkRoom activeLinkRoom" id="cont-1">Lobby (test)</a>
+        <a href="javascript:;" class="tabLinkRoom activeLinkRoom" id="cont-1">Room</a>
         <!--  
         <a href="javascript:;" class="tabLink " id="cont-2">Room 2</a> 
         <a href="javascript:;" class="tabLink " id="cont-3">Room 3</a> 
@@ -118,21 +121,26 @@
     </div>
     
     
-    <div class="tabcontent paddingAll" id="cont-1-1"> 
-        <h2>Lobby</h2>
+    <div class="tabcontent paddingAll" id="cont-1-1" style='width:620px; height:440px; border:1px solid #999; overflow:auto;'> 
+        <center><h2>Room</h2></center>
             <div id="messages" class="message-box"></div>
     
                 <form id="send-message-form">
                     <input id="message" type="text"  disabled="disabled"/>
                     <input type="submit" value="Send"  disabled="disabled"/>
                 </form>
+    
     </div>
+    </td>
+    <td>
             <div class="tab-box-setting">
                 <a href="javascript:;" class="tabLinkSetting activeLinkSetting" id="set-1">Setting</a>
                 <a href="javascript:;" class="tabLinkSetting" id="set-2">Clients</a>
             </div>
             <!-- Setting tab panel -->
-            <div class="tabcontentSetting paddingAll" id="set-1-1">
+            <div class="tabcontentSetting paddingAll" id="set-1-1" style='width:200px; height:440px; border:1px solid #999; overflow:auto;'>
+                    <h3>Rooms</h3>
+                    <div id="rooms"></div>
                     <form id="join-form">
                         <dl>
                             <dt>Room</dt>
@@ -149,10 +157,11 @@
             </div>
   
   
-            <div class="tabcontentSetting paddingAll hideSetting" id="set-2-1">
+            <div class="tabcontentSetting paddingAll hideSetting" id="set-2-1" style='width:200px; height:440px; border:1px solid #999; overflow:auto;'>
                 <h2>Clients</h2>
-                <div id="clients"></div>
+                <div id="clients">Not yet joined any room</div>
             </div>
+  </td></tr>
   <!-- End of setting tab panel -->  
   
   <!--
@@ -164,6 +173,7 @@
     Chat room number 3
   </div>   
   -->
+  </table>
   <!-- End of HTML -->
 
   
