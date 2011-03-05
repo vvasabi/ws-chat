@@ -1,5 +1,6 @@
 package ca.wasabistudio.chat.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Access;
@@ -12,7 +13,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class RoomSetting {
+public class RoomSetting implements Serializable {
+
+    private static final long serialVersionUID = 185641357189839497L;
 
     @Id
     @GeneratedValue

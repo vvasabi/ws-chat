@@ -1,5 +1,8 @@
 package ca.wasabistudio.chat.entity;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -17,7 +20,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class Room {
+public class Room implements Serializable {
+
+    private static final long serialVersionUID = 3056095542238612660L;
 
     @Id
     @Access(AccessType.FIELD)
@@ -32,12 +37,12 @@ public class Room {
 
     @OneToMany(cascade = CascadeType.ALL)
     @Access(AccessType.FIELD)
-    private List<Message> messages;
+    private transient List<Message> messages;
 
     @ManyToMany
     @Access(AccessType.FIELD)
     @OrderBy("username")
-    private List<Client> clients;
+    private transient List<Client> clients;
 
     private Message lastMessage;
 
@@ -46,13 +51,23 @@ public class Room {
         this.title = "";
         this.motd = "";
         this.createTime = new Date();
-        this.messages = new ArrayList<Message>();
-        this.clients = new ArrayList<Client>();
+        initializeTransientFields();
     }
 
     public Room(String key) {
         this();
         this.key = key;
+    }
+
+    private void readObject(ObjectInputStream stream) throws IOException,
+            ClassNotFoundException {
+        stream.defaultReadObject();
+        initializeTransientFields();
+    }
+
+    private void initializeTransientFields() {
+        this.messages = new ArrayList<Message>();
+        this.clients = new ArrayList<Client>();
     }
 
     public String getKey() {

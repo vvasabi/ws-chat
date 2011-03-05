@@ -9,8 +9,9 @@ import java.util.List;
 
 import ca.wasabistudio.chat.entity.Client;
 
-@SuppressWarnings("serial")
 public class ClientDTO implements Serializable {
+
+    private static final long serialVersionUID = 6495867692209759453L;
 
     private String username;
     private String status;

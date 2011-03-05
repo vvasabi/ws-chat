@@ -1,5 +1,6 @@
 package ca.wasabistudio.chat.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -8,7 +9,9 @@ import java.util.List;
 
 import ca.wasabistudio.chat.entity.Room;
 
-public class RoomDTO {
+public class RoomDTO implements Serializable {
+
+    private static final long serialVersionUID = 8116235491801242074L;
 
     private String key;
 
