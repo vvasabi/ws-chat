@@ -13,6 +13,7 @@ import javax.persistence.EntityTransaction;
  */
 public class Connector {
 
+    private static final int ANONYMOUS_USER_ID = 1;
     private static final String IP_DELIMITER_REGEX = "\\.";
 
     private EntityManager em;
@@ -40,6 +41,12 @@ public class Connector {
                 return false;
             }
         }
+
+        // check if user is anonymous
+        if (session.getUserId() == ANONYMOUS_USER_ID) {
+            return false;
+        }
+
         return true;
     }
 
