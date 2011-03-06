@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Test Suite" verbose="1" >
+    <test name="Test 1">
+        <packages>
+            <package name="ca.wasabistudio.chat.entity" />
+            <package name="ca.wasabistudio.chat.rs" />
+            <package name="ca.wasabistudio.chat.support" />
+        </packages>
+    </test>
+</suite>

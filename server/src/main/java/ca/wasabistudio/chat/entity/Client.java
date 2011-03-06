@@ -1,7 +1,5 @@
 package ca.wasabistudio.chat.entity;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
@@ -34,33 +32,23 @@ public class Client implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @Access(AccessType.FIELD)
-    private transient Set<Message> messages;
+    private Set<Message> messages;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @Access(AccessType.FIELD)
-    private transient Set<RoomSetting> roomSettings;
+    private Set<RoomSetting> roomSettings;
 
     Client() {
         username = "";
         status = "";
         lastSync = new Date();
-        initializeTransientFields();
+        messages = new HashSet<Message>();
+        roomSettings = new HashSet<RoomSetting>();
     }
 
     public Client(String username) {
         this();
         this.username = username;
-    }
-
-    private void readObject(ObjectInputStream stream) throws IOException,
-            ClassNotFoundException {
-        stream.defaultReadObject();
-        initializeTransientFields();
-    }
-
-    private void initializeTransientFields() {
-        messages = new HashSet<Message>();
-        roomSettings = new HashSet<RoomSetting>();
     }
 
     public String getUsername() {

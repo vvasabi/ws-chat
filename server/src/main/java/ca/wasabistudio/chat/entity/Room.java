@@ -1,7 +1,5 @@
 package ca.wasabistudio.chat.entity;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,12 +35,12 @@ public class Room implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL)
     @Access(AccessType.FIELD)
-    private transient List<Message> messages;
+    private List<Message> messages;
 
     @ManyToMany
     @Access(AccessType.FIELD)
     @OrderBy("username")
-    private transient List<Client> clients;
+    private List<Client> clients;
 
     private Message lastMessage;
 
@@ -51,23 +49,13 @@ public class Room implements Serializable {
         this.title = "";
         this.motd = "";
         this.createTime = new Date();
-        initializeTransientFields();
+        this.messages = new ArrayList<Message>();
+        this.clients = new ArrayList<Client>();
     }
 
     public Room(String key) {
         this();
         this.key = key;
-    }
-
-    private void readObject(ObjectInputStream stream) throws IOException,
-            ClassNotFoundException {
-        stream.defaultReadObject();
-        initializeTransientFields();
-    }
-
-    private void initializeTransientFields() {
-        this.messages = new ArrayList<Message>();
-        this.clients = new ArrayList<Client>();
     }
 
     public String getKey() {
@@ -114,7 +102,6 @@ public class Room implements Serializable {
         RoomSetting setting = new RoomSetting(client, this);
         setting.setLastMessage(getLastMessage());
         client.addRoomSetting(setting);
-
         clients.add(client);
     }
 
