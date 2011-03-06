@@ -50,7 +50,8 @@ public class Room implements Serializable {
     @ManyToMany
     @JoinTable(name="rooms_clients",
         joinColumns=@JoinColumn(name="room_key"),
-        inverseJoinColumns=@JoinColumn(name="username"))
+        inverseJoinColumns=@JoinColumn(name="username",
+            referencedColumnName="username"))
     @Access(AccessType.FIELD)
     @OrderBy("username")
     private List<Client> clients;
