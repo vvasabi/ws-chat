@@ -15,7 +15,7 @@ jQuery(function() {
 
       var message = '<strong>Url:</strong> ' + url;
       jQuery('#status').html(message);
-      setupSession();
+      getSessionId();
     },
     error: function(xhr) {
       var message = 'Config loading failed: ' + xhr.status;
@@ -104,7 +104,23 @@ function appendSession(url) {
   return url + ';jsessionid=' + session;
 }
 
-function setupSession() {
+function getSessionId() {
+  jQuery.ajax({
+    type: 'POST',
+    url: 'sid',
+    success: function(data) {
+      sid = data;
+      setupServerSession();
+    },
+    error: function(xhr) {
+      var message = "Unable to acquire session: " + xhr.status;
+      jQuery('#status').html(message);
+    },
+    dataType: 'text'
+  });
+}
+
+function setupServerSession() {
   jQuery.ajax({
     type: 'GET',
     url: url + 'client/session',
