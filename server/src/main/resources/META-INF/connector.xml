@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/osgi
+        http://www.springframework.org/schema/osgi/spring-osgi-1.2.xsd
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- phpBB Connector -->
+
+    <bean id="connector" class="ca.wasabistudio.chat.connector.Connector"
+        destroy-method="destroy">
+        <property name="entityManagerFactory">
+            <bean class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+                <property name="persistenceUnitName" value="connector" />
+            </bean>
+        </property>
+    </bean>
+
+</beans>

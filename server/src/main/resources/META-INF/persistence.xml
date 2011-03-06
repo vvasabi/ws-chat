@@ -23,4 +23,23 @@
                 value="database" />
         </properties>
     </persistence-unit>
+
+    <persistence-unit name="connector" transaction-type="RESOURCE_LOCAL">
+        <class>ca.wasabistudio.chat.connector.User</class>
+        <class>ca.wasabistudio.chat.connector.Session</class>
+
+        <properties>
+            <property name="javax.persistence.jdbc.driver"
+                value="org.h2.Driver" />
+            <property name="javax.persistence.jdbc.url"
+                value="jdbc:h2:mem:connector" />
+            <property name="javax.persistence.jdbc.user" value="sa" />
+            <property name="javax.persistence.jdbc.password" value="" />
+
+            <!-- EclipseLink should create the database schema automatically -->
+            <property name="eclipselink.ddl-generation" value="create-tables" />
+            <property name="eclipselink.ddl-generation.output-mode"
+                value="database" />
+        </properties>
+    </persistence-unit>
 </persistence>

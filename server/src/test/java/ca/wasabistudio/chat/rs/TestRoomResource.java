@@ -5,7 +5,6 @@ import javax.persistence.EntityManagerFactory;
 
 import static org.testng.Assert.*;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -19,7 +18,7 @@ import ca.wasabistudio.chat.support.Session;
 
 public class TestRoomResource {
 
-    private ApplicationContext context;
+    private ClassPathXmlApplicationContext context;
     private EntityManagerFactory emf;
 
     @BeforeMethod
@@ -29,7 +28,7 @@ public class TestRoomResource {
                 "META-INF/services.xml"
         };
         context = new ClassPathXmlApplicationContext(paths);
-        emf = context.getBean(EntityManagerFactory.class);
+        emf = (EntityManagerFactory)context.getBean(EntityManagerFactory.class);
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         Client client = new Client("moneycash");
@@ -45,6 +44,7 @@ public class TestRoomResource {
     @AfterMethod
     public void tearDown() {
         emf.close();
+        context.close();
     }
 
     @Test

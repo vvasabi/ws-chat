@@ -9,7 +9,6 @@ import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -21,7 +20,7 @@ import ca.wasabistudio.chat.support.Cron;
 
 public class TestCron {
 
-    private ApplicationContext context;
+    private ClassPathXmlApplicationContext context;
     private EntityManagerFactory emf;
 
     @BeforeMethod
@@ -47,6 +46,7 @@ public class TestCron {
     @AfterMethod
     public void tearDown() {
         emf.close();
+        context.close();
     }
 
     @Test
