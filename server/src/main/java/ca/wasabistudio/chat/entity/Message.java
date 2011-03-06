@@ -10,8 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,15 +29,13 @@ public class Message implements Serializable {
     @Column(name="body", length=300)
     private String body;
 
-    @JoinColumn(name="username")
-    @ManyToOne(optional=true)
+    @Column(name="username")
     @Access(AccessType.FIELD)
-    private Client client;
+    private String username;
 
-    @JoinColumn(name="room_key")
-    @ManyToOne(optional=true)
+    @Column(name="room_key")
     @Access(AccessType.FIELD)
-    private Room room;
+    private String roomKey;
 
     @Column(name="create_time")
     @Temporal(TemporalType.TIMESTAMP)
@@ -49,14 +45,14 @@ public class Message implements Serializable {
     Message() {
         id = 0;
         body = "";
-        client = null;
+        username = "";
         createTime = new Date();
     }
 
     public Message(Client client, Room room, String body) {
         this();
-        this.client = client;
-        this.room = room;
+        this.username = client.getUsername();
+        this.roomKey = room.getKey();
         this.body = body;
     }
 
@@ -72,12 +68,12 @@ public class Message implements Serializable {
         this.body = body;
     }
 
-    public Client getClient() {
-        return client;
+    public String getUsername() {
+        return username;
     }
 
-    public Room getRoom() {
-        return room;
+    public String getRoomKey() {
+        return roomKey;
     }
 
     public Date getCreateTime() {

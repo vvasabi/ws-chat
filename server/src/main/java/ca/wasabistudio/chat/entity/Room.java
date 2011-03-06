@@ -43,15 +43,15 @@ public class Room implements Serializable {
     @Access(AccessType.FIELD)
     private Date createTime;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="room")
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="room_key")
     @Access(AccessType.FIELD)
     private List<Message> messages;
 
-    @ManyToMany
+    @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(name="rooms_clients",
         joinColumns=@JoinColumn(name="room_key"),
-        inverseJoinColumns=@JoinColumn(name="username",
-            referencedColumnName="username"))
+        inverseJoinColumns=@JoinColumn(name="username"))
     @Access(AccessType.FIELD)
     @OrderBy("username")
     private List<Client> clients;

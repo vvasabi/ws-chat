@@ -39,7 +39,7 @@ public class Client implements Serializable {
     @Access(AccessType.FIELD)
     private Date lastSync;
 
-    @OneToMany(cascade=CascadeType.PERSIST, mappedBy="client")
+    @OneToMany(cascade=CascadeType.PERSIST)
     @Access(AccessType.FIELD)
     private Set<Message> messages;
 

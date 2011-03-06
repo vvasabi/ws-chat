@@ -14,10 +14,9 @@ public class MessageDTO implements Serializable {
     private static final long serialVersionUID = 1502017135569482383L;
 
     private String body;
-
     private Date createTime;
-
     private String client;
+    private String room;
 
     public MessageDTO() {
         body = "";
@@ -27,7 +26,8 @@ public class MessageDTO implements Serializable {
     public MessageDTO(Message message) {
         this.body = message.getBody();
         this.createTime = message.getCreateTime();
-        this.client = message.getClient().getUsername();
+        this.client = message.getUsername();
+        this.room = message.getRoomKey();
     }
 
     public String getBody() {
@@ -52,6 +52,14 @@ public class MessageDTO implements Serializable {
 
     public void setClient(String client) {
         this.client = client;
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
     }
 
     public static Collection<MessageDTO> toDTOs(Collection<Message> messages) {

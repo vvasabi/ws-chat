@@ -99,16 +99,16 @@ public class RoomResource {
         if (lastMessage == null) {
             messages = em.createQuery("select m from Message m " +
                     "where m.createTime >= :time " +
-                        "and m.room = :room")
+                        "and m.roomKey = :roomKey")
                 .setParameter("time", setting.getEnterTime())
-                .setParameter("room", room)
+                .setParameter("roomKey", room.getKey())
                 .getResultList();
         } else {
             messages = em.createQuery("select m from Message m " +
                     "where m.id > :id " +
-                        "and m.room = :room")
+                        "and m.roomKey = :roomKey")
                 .setParameter("id", setting.getLastMessage().getId())
-                .setParameter("room", room)
+                .setParameter("roomKey", room.getKey())
                 .getResultList();
         }
 
