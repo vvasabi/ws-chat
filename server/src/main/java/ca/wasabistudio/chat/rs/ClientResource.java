@@ -23,12 +23,6 @@ import ca.wasabistudio.chat.support.SessionException;
 @Path("/client")
 public class ClientResource {
 
-    @Context
-    private ServletConfig config;
-
-    @Context
-    private HttpServletRequest request;
-
     private EntityManager em;
     private Connector connector;
     private Session session;
@@ -57,15 +51,17 @@ public class ClientResource {
     @Path("/enter/{sessionId}")
     @Produces("text/plain")
     @Transactional
-    public String enter(@PathParam("sessionId") String sessionId) {
+    public String enter(@PathParam("sessionId") String sessionId,
+            @Context ServletConfig config,
+            @Context HttpServletRequest request) {
         if ((sessionId == null) || "".equals(sessionId)) {
             String message = "Session id cannot be empty.";
             throw new RequestErrorException(message);
         }
 
         String username = sessionId;
-        if (isProductionMode()) {
-            if (!connector.validateSession(sessionId, getIp())) {
+        if (isProductionMode(config)) {
+            if (!connector.validateSession(sessionId, getIp(request))) {
                 throw new SessionException("Unable to enter.");
             }
 
@@ -82,11 +78,11 @@ public class ClientResource {
         return username;
     }
 
-    private String getIp() {
+    private String getIp(HttpServletRequest request) {
         return request.getRemoteAddr();
     }
 
-    private boolean isProductionMode() {
+    private boolean isProductionMode(ServletConfig config) {
         if (config == null) {
             return false;
         }
