@@ -39,7 +39,7 @@ jQuery(function() {
 
     jQuery('#send-message-form').submit(function() {
         var message = jQuery('#message').val();
-        if (!message) {
+        if (!message.trim()) {
             postMessage(MessageType.ERROR, null, '請輸入要送出的訊息。');
             return false;
         }
