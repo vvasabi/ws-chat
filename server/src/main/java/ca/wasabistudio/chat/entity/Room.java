@@ -9,39 +9,53 @@ import java.util.List;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
+@Table(name="rooms")
 public class Room implements Serializable {
 
     private static final long serialVersionUID = 3056095542238612660L;
 
     @Id
+    @Column(name="room_key")
     @Access(AccessType.FIELD)
     private String key;
 
+    @Column(name="title")
     private String title;
+
+    @Column(name="motd")
     private String motd;
 
+    @Column(name="create_time")
     @Temporal(TemporalType.TIMESTAMP)
     @Access(AccessType.FIELD)
     private Date createTime;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="room")
     @Access(AccessType.FIELD)
     private List<Message> messages;
 
     @ManyToMany
+    @JoinTable(name="rooms_clients",
+        joinColumns=@JoinColumn(name="room_key"),
+        inverseJoinColumns=@JoinColumn(name="username"))
     @Access(AccessType.FIELD)
     @OrderBy("username")
     private List<Client> clients;
 
+    @JoinColumn(name="last_message")
     private Message lastMessage;
 
     Room() {

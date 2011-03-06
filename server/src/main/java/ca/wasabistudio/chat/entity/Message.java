@@ -5,33 +5,43 @@ import java.util.Date;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
+@Table(name="messages")
 public class Message implements Serializable {
 
     private static final long serialVersionUID = 3635563826579404945L;
 
     @Id
-    @GeneratedValue
+    @Column(name="message_id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Access(AccessType.FIELD)
     private int id;
 
+    @Column(name="body")
     private String body;
 
-    @ManyToOne
+    @JoinColumn(name="username")
+    @ManyToOne(optional=true)
     @Access(AccessType.FIELD)
     private Client client;
 
-    @ManyToOne
+    @JoinColumn(name="room_key")
+    @ManyToOne(optional=true)
     @Access(AccessType.FIELD)
     private Room room;
 
+    @Column(name="create_time")
     @Temporal(TemporalType.TIMESTAMP)
     @Access(AccessType.FIELD)
     private Date createTime;

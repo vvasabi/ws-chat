@@ -5,35 +5,46 @@ import java.util.Date;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
+@Table(name="room_settings")
 public class RoomSetting implements Serializable {
 
     private static final long serialVersionUID = 185641357189839497L;
 
     @Id
-    @GeneratedValue
+    @Column(name="room_setting_id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Access(AccessType.FIELD)
     private int id;
 
+    @Column(name="status")
     private String status;
 
+    @JoinColumn(name="message")
     private Message lastMessage;
 
     @ManyToOne
+    @JoinColumn(name="client")
     @Access(AccessType.FIELD)
     private Client client;
 
     @ManyToOne
+    @JoinColumn(name="room")
     @Access(AccessType.FIELD)
     private Room room;
 
+    @Column(name="enter_time")
     @Temporal(TemporalType.TIMESTAMP)
     @Access(AccessType.FIELD)
     private Date enterTime;

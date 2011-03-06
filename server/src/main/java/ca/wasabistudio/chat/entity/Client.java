@@ -9,32 +9,38 @@ import java.util.Set;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
+@Table(name="clients")
 public class Client implements Serializable {
 
     private static final long serialVersionUID = 7958127884926450063L;
 
     @Id
+    @Column(name="username", length=100)
     @Access(AccessType.FIELD)
     private String username;
 
+    @Column(name="status", length=10)
     private String status;
 
+    @Column(name="last_sync")
     @Temporal(TemporalType.TIMESTAMP)
     @Access(AccessType.FIELD)
     private Date lastSync;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade=CascadeType.PERSIST, mappedBy="client")
     @Access(AccessType.FIELD)
     private Set<Message> messages;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true, mappedBy="client")
     @Access(AccessType.FIELD)
     private Set<RoomSetting> roomSettings;
 
