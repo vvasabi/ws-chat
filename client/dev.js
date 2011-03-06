@@ -62,13 +62,12 @@ function createUser(username, success) {
   jQuery.ajax({
     contentType: 'application/json',
     type: 'POST',
-    url: appendSession(url + 'client/join'),
+    url: appendSession(url + 'client/enter/' + username),
     success: success,
     error: function(xhr, textStatus) {
       var message = 'Unable to join a room: ' + textStatus;
       jQuery('#current-room .status').text(message);
-    },
-    data: JSON.stringify({ username: username })
+    }
   });
 }
 
