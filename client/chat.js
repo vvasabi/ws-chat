@@ -167,12 +167,18 @@ function postMessage(type, source, body, time) {
     }
 
     var message = '';
-    body = body.replace('<', '&lt;').replace('>', '&rt;');
+    var escaped = body;
+    while (escaped.search('<') != -1) {
+        escaped = escaped.replace('<', '&lt;');
+    }
+    while (escaped.search('>') != -1) {
+        escaped = escaped.replace('>', '&gt;');
+    }
     if (type == MessageType.REGULAR) {
         var message = '<span class="source">' + source + ':</span> ';
-        message += '<span class="body">' + body + '</span>';
+        message += '<span class="body">' + escaped + '</span>';
     } else {
-        var message = '<span class="body">' + body + '</span>';
+        var message = '<span class="body">' + escaped + '</span>';
     }
 
     var date = new Date();
