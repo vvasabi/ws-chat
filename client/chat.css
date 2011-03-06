@@ -152,8 +152,7 @@ form {
         endColorstr=#eeffffff);
 
     /* For IE 8*/
-    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#eeffffff,
-        endColorstr=#eeffffff)";
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#eeffffff,endColorstr=#eeffffff)";
 
     width: 100%;
     position: absolute;

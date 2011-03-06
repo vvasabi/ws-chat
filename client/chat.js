@@ -17,7 +17,7 @@ jQuery(function() {
     // no support for msie
     if (msie()) {
         jQuery('#ie-mask').css('display', 'block');
-        jQuery('#ie-mask').height(document.body.clientHeight);
+        jQuery('#ie-mask').css('height', jQuery(document).height() + 'px');
         return;
     }
 
