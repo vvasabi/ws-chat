@@ -98,13 +98,17 @@ public class RoomResource {
         Message lastMessage = setting.getLastMessage();
         if (lastMessage == null) {
             messages = em.createQuery("select m from Message m " +
-                    "where m.createTime >= :time")
+                    "where m.createTime >= :time " +
+                        "and m.room = :room")
                 .setParameter("time", setting.getEnterTime())
+                .setParameter("room", room)
                 .getResultList();
         } else {
             messages = em.createQuery("select m from Message m " +
-                    "where m.id > :id")
+                    "where m.id > :id " +
+                        "and m.room = :room")
                 .setParameter("id", setting.getLastMessage().getId())
+                .setParameter("room", room)
                 .getResultList();
         }
 
