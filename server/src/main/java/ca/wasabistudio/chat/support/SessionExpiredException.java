@@ -1,7 +1,7 @@
 package ca.wasabistudio.chat.support;
 
 @SuppressWarnings("serial")
-public class SessionExpiredException extends RuntimeException {
+public class SessionExpiredException extends SessionException {
 
     public SessionExpiredException() {
     }

@@ -8,6 +8,13 @@
 
     <display-name>wasabi studio chat room</display-name>
 
+    <!-- Application Specific -->
+
+    <context-param>
+        <param-name>mode</param-name>
+        <param-value>DEVELOPMENT</param-value>
+    </context-param>
+
     <!-- Spring -->
 
     <context-param>
@@ -40,7 +47,7 @@
             ca.wasabistudio.chat.support.AlreadyJoinedExceptionMapper,
             ca.wasabistudio.chat.support.NotFoundExceptionMapper,
             ca.wasabistudio.chat.support.RequestErrorExceptionMapper,
-            ca.wasabistudio.chat.support.SessionExpiredExceptionMapper
+            ca.wasabistudio.chat.support.SessionExceptionMapper
         </param-value>
     </context-param>
 
