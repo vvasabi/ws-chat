@@ -1,10 +1,19 @@
+<?php
+$cookie_name = 'phpbb3_c7y16_';
+?>
 <!DOCTYPE html>
 <html>
   <head>
+    <title>WS Chat Dev Tool</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <script type="text/javascript" src="jquery-1.5.1.min.js"></script>
     <script type="text/javascript" src="json2.js"></script>
-    <script type="text/javascript" src="dev.js"></script>
+    <script type="text/javascript" src="chat.js"></script>
+    <script type="text/javascript">
+    // <![CDATA[
+    var sid = '<?php echo $_COOKIE[$cookie_name . 'sid']; ?>';
+    // ]]>
+    </script>
     <style type="text/css">
       body {
         font: 1em/1em Gill Sans, Gill Sans MT, helvetica, sans-serif;
@@ -53,7 +62,7 @@
           <dd><input id="room-key" type="text" /></dd>
 
           <dt>Username</dt>
-          <dd><input id="client-username" type="text" /></dd>
+          <dd><input id="client-username" type="text" disabled="disabled" /></dd>
         </dl>
 
         <p>
