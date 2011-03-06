@@ -1,0 +1,191 @@
+/**
+ * Stylesheet of the Chat Room
+ */
+
+body {
+    font: 1em/1em Gill Sans, Gill Sans MT, helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+form {
+    margin: 0;
+}
+
+#wrapper {
+    border: 15px solid #aaa;
+}
+
+#wrapper h1 {
+    border-bottom: 10px solid #aaa;
+    text-align: center;
+    font-size: 1.4em;
+    font-weight: normal;
+    line-height: 1em;
+    margin: 0;
+    padding: 10px;
+}
+
+#wrapper #content {
+  padding: 15px;
+}
+
+#wrapper #content #chat-box {
+    background: #bbb;
+    padding: 15px;
+}
+
+#wrapper #content #chat-box #messages {
+    background: #fff;
+    width: 67%;
+    height: 310px;
+    padding: 5px 1%;
+    overflow-y: scroll;
+    float: left;
+}
+
+#wrapper #content #chat-box #messages p {
+    margin: 5px 0;
+}
+
+#wrapper #content #chat-box #participants {
+    background: #fafafa;
+    width: 27%;
+    height: 300px;
+    padding: 10px 1%;
+    float: right;
+}
+
+#wrapper #content #chat-box #participants h2 {
+    font-size: 1.1em;
+    font-weight: normal;
+    text-align: center;
+    margin: 0 0 1em;
+}
+
+#wrapper #content #chat-box #participants ul.list {
+    list-style: none;
+    margin: 5px 0;
+    padding: 0 0 0 10px;
+}
+
+#wrapper #content #control-box {
+    background: #bbb;
+    padding: 0 15px 15px;
+}
+
+#wrapper #content #control-box #message {
+    border: none;
+    font-size: 1.2em;
+    width: 67%;
+    height: 24px;
+    padding: 5px 1%;
+}
+
+#wrapper #content #control-box #send-button {
+    border: none;
+    background: #eee;
+    height: 34px;
+    margin-left: 1%;
+    padding: 10px 15px;
+    position: relative;
+    top: -2px;
+}
+
+/**
+ * Message Types
+ */
+
+.message-regular .body {
+    color: #666;
+}
+
+.message-notice .body {
+    color: #00ccff;
+    font-size: 0.9em;
+}
+
+.message-error .body {
+  color: #ff0000;
+    font-size: 0.9em;
+}
+
+/**
+ * Style classes
+ */
+
+.date {
+    color: #888;
+    font-size: 0.75em;
+}
+
+/**
+ * Clear fix (http://www.positioniseverything.net/easyclearing.html)
+ */
+
+.clear-block:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.clear-block {
+    display: inline-block;
+}
+
+/* Hides from IE-mac \*/
+* html .clear-block {
+    height: 1%;
+}
+.clear-block {
+    display: block;
+}
+/* End hide from IE-mac */
+
+#ie-mask {
+    background: rgba(255, 255, 255, 0.9);
+
+    /* For IE 5.5 - 7*/
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#eeffffff,
+        endColorstr=#eeffffff);
+
+    /* For IE 8*/
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#eeffffff,
+        endColorstr=#eeffffff)";
+
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    display: none;
+}
+
+#ie-mask .message-box {
+    background: url(images/ie-error.png) no-repeat;
+    font-size: 12px;
+    line-height: 18px;
+    width: 500px;
+    height: 93px;
+    padding: 28px 15px 5px 60px;
+    position: absolute;
+    top: 175px;
+    left: 18%;
+    z-index: 150px;
+}
+
+#ie-mask .message-box .ok {
+    padding: 20px 0 0 189px;
+}
+
+#ie-mask .message-box .ok a {
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    width: 75px;
+    height: 16px;
+    padding: 6px 0 0 0;
+    display: block;
+}
