@@ -73,6 +73,7 @@ public class ClientResource {
         }
 
         Client client = new Client(username);
+        client.setSessionId(sessionId);
         em.persist(client);
         session.setClient(client);
         return username;

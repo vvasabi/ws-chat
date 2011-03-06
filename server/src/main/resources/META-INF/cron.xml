@@ -8,7 +8,9 @@
 
     <!-- Cron Jobs -->
 
-    <bean id="cron" class="ca.wasabistudio.chat.support.Cron" scope="prototype" />
+    <bean id="cron" class="ca.wasabistudio.chat.support.Cron" scope="prototype">
+        <property name="connector" ref="connector" />
+    </bean>
 
     <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetBeanName" value="cron" />
@@ -17,11 +19,10 @@
     </bean>
 
     <bean id="trigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-        <!-- see the example of method invoking job above -->
         <property name="jobDetail" ref="jobDetail" />
 
-        <!-- 30 seconds -->
-        <property name="repeatInterval" value="30000" />
+        <!-- 10 seconds -->
+        <property name="repeatInterval" value="10000" />
     </bean>
 
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

@@ -11,6 +11,7 @@
     <bean id="session" class="ca.wasabistudio.chat.support.Session" />
 
     <bean id="clientService" class="ca.wasabistudio.chat.rs.ClientResource">
+        <property name="connector" ref="connector" />
         <property name="session" ref="session" />
     </bean>
 

@@ -25,6 +25,7 @@ public class TestRoomResource {
     public void setup() {
         String[] paths = new String[] {
                 "META-INF/spring-jpa.xml",
+                "META-INF/connector.xml",
                 "META-INF/services.xml"
         };
         context = new ClassPathXmlApplicationContext(paths);

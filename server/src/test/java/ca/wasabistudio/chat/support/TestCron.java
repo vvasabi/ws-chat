@@ -27,6 +27,7 @@ public class TestCron {
     public void setup() {
         String[] paths = new String[] {
                 "META-INF/spring-jpa.xml",
+                "META-INF/connector.xml",
                 "META-INF/cron.xml",
                 "META-INF/services.xml"
         };
