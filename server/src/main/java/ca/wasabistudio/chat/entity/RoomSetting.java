@@ -28,7 +28,7 @@ public class RoomSetting implements Serializable {
     @Access(AccessType.FIELD)
     private int id;
 
-    @Column(name="status")
+    @Column(name="status", length=20)
     private String status;
 
     @JoinColumn(name="message")

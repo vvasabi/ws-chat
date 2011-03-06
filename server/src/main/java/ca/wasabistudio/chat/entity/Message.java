@@ -28,7 +28,7 @@ public class Message implements Serializable {
     @Access(AccessType.FIELD)
     private int id;
 
-    @Column(name="body")
+    @Column(name="body", length=300)
     private String body;
 
     @JoinColumn(name="username")

@@ -28,14 +28,14 @@ public class Room implements Serializable {
     private static final long serialVersionUID = 3056095542238612660L;
 
     @Id
-    @Column(name="room_key")
+    @Column(name="room_key", length=25)
     @Access(AccessType.FIELD)
     private String key;
 
-    @Column(name="title")
+    @Column(name="title", length=50)
     private String title;
 
-    @Column(name="motd")
+    @Column(name="motd", length=200)
     private String motd;
 
     @Column(name="create_time")
