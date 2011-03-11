@@ -117,9 +117,10 @@ function enter(success) {
 }
 
 function joinRoom(roomKey, success) {
+    var key = encodeURIComponent(roomKey);
     jQuery.ajax({
         type: 'POST',
-        url: appendSession(url + 'room/join/' + roomKey),
+        url: appendSession(url + 'room/join/' + key),
         success: success,
         error: function(xhr, textStatus) {
             var message = '加入聊天室失敗： ' + xhr.status;
@@ -129,10 +130,11 @@ function joinRoom(roomKey, success) {
 }
 
 function sendMessage(roomKey, message) {
+    var key = encodeURIComponent(roomKey);
     jQuery.ajax({
         contentType: 'application/json',
         type: 'POST',
-        url: appendSession(url + 'room/info/' + roomKey + '/messages'),
+        url: appendSession(url + 'room/info/' + key + '/messages'),
         success: function() {
             updateMessages();
             refreshRequested = true;
@@ -205,9 +207,10 @@ function updateListOfClients() {
     if (!currentRoom) {
         return;
     }
+    var key = encodeURIComponent(currentRoom);
     jQuery.ajax({
         type: 'GET',
-        url: appendSession(url + 'room/info/' + currentRoom + '/clients'),
+        url: appendSession(url + 'room/info/' + key + '/clients'),
         success: function(data) {
             var list = jQuery('#participants .list');
             if (!data.length) {
@@ -240,9 +243,10 @@ function updateMessages() {
         refreshRequested = false;
         return;
     }
+    var key = encodeURIComponent(currentRoom);
     jQuery.ajax({
         type: 'GET',
-        url: appendSession(url + 'room/info/' + currentRoom + '/messages'),
+        url: appendSession(url + 'room/info/' + key + '/messages'),
         success: function(data) {
             var element = jQuery('#messages');
             if (!data.length) {
