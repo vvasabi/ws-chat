@@ -222,4 +222,3 @@ function updateMessages() {
     dataType: 'json'
   }); 
 }
-

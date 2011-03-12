@@ -264,3 +264,20 @@ function updateMessages() {
         dataType: 'json'
     });
 }
+
+jQuery(document).ready(function() 
+  {
+    $(".tabLinkRoom").each(function()
+    {
+      $(this).click(function()
+      {
+        RoomId = $(this).attr('id');
+        $(".tabLinkRoom").removeClass("activeLinkRoom");
+        $(this).addClass("activeLinkRoom");
+        $(".tabcontentRoom").addClass("hideRoom");
+        $("#"+RoomId+"-1").removeClass("hideRoom")  
+        return false;	  
+      });
+    });  
+  });
+  
