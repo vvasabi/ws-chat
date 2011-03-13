@@ -203,7 +203,7 @@ Madao's Tab
 }
 .tab-box-room a 
 {
-    border:1px solid #DDD;
+    border:15px solid #aaa;
     color:#666666;
     padding: 5px 15px;
     text-decoration:none;
@@ -224,4 +224,3 @@ Madao's Tab
 { 
     display: none;
 }
-
