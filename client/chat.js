@@ -266,33 +266,52 @@ function updateMessages() {
     });
 }
 
-jQuery(document).ready(function() 
-  {
-    $(".tabLinkRoom").each(function()
-    {
-      $(this).click(function()
-      {
+/*
+function updateTab() {
+    //jQuery(document).ready(function() {
+        $(".tabLinkRoom").each(function() {
+            $(this).click(function() {
+                roomId = $(this).attr('id');
+                $(".tabLinkRoom").removeClass("activeLinkRoom");
+                $(this).addClass("activeLinkRoom");
+                $(".tabcontentRoom").addClass("hideRoom");
+                $("#"+roomId+"-1").removeClass("hideRoom");
+            });
+        }); 
+        
+    //});
+}
+*/
+
+jQuery(function(){
+    var tab = '<a href="javascript:;" id="tab-'+tabCount+'">拉比</a>';
+    $("#tab").append(tab);
+    $("#tab-"+tabCount).addClass("tabLinkRoom activeLinkRoom");
+    /*$("#tab").click(function() {
         roomId = $(this).attr('id');
         $(".tabLinkRoom").removeClass("activeLinkRoom");
         $(this).addClass("activeLinkRoom");
         $(".tabcontentRoom").addClass("hideRoom");
         $("#"+roomId+"-1").removeClass("hideRoom");
-      });
-    });  
-  });
-
-jQuery(function(){
-    $("#tab").append('<a href="javascript:;" id="tab-'+tabCount+'">拉比</a>'); 
-    $("#tab-"+tabCount).addClass("tabLinkRoom activeLinkRoom");
-    $("#tab-1-1").append('<div id="tab-1-1"'+
+    });*/
+    $("#tab-room").append('<div id="tab-'+tabCount+'-1">'+
                         '<div id="chat-box" class="clear-block">'+
                             '<div id="participants">'+
                                 '<h2>聊天室成員</h2>'+
                                 '<ul class="list"></ul>'+
                             '</div>'+
-                        '<div id="messages" class="message-box"></div>');
-    $("#tab-"+tabCount+"-1").addClass("tabcontentRoom paddingAll");
+                        '<div id="messages" class="message-box"></div>'+
+                        '</div>'+
+                        '</div>');
+    $("#tab-1-1").addClass("tabcontentRoom paddingAll ");
+        $("#tab-1").click(function() {
+            $(".tabLinkRoom").removeClass("activeLinkRoom");
+            $("#tab-1").addClass("activeLinkRoom");
+            $(".tabcontentRoom").addClass("hideRoom");
+            $("#tab-1-1").removeClass("hideRoom");
+        });
     tabCount += 1;
+    
 });
 
 jQuery(function() {
@@ -300,18 +319,27 @@ jQuery(function() {
 });
 
 jQuery(document).ready(function(){
-    
     $(".tab-plus").click(function() {
-    $("#tab").append('<a href="javascript:; id="'+'tab-'+tabCount+'">拉比</a>'); 
-    $("#tab-"+tabCount).addClass("tabLinkRoom");
-    $("#tab-"+tabCount+"-1").append('<div id="tab-'+tabCount+'-1"'+
+    var tab = '<a href="javascript:;" id="tab-'+tabCount+'">拉比</a>';
+    var roomId = "tab-"+tabCount;
+    var newRoom = tabCount-1;
+    $("#tab").append(tab); 
+    $("#"+roomId).addClass("tabLinkRoom");
+    $("#tab-room").append('<div id="'+roomId+'-1">'+
                         '<div id="chat-box" class="clear-block">'+
                             '<div id="participants">'+
                                 '<h2>聊天室成員</h2>'+
                                 '<ul class="list"></ul>'+
                             '</div>'+
-                        '<div id="messages" class="message-box"></div></div>');
-    $("#tab-"+tabCount+"-1").addClass("tabcontentRoom hideRoom paddingAll");
-    tabCount += 1;
+                        '<div id="messages" class="message-box"></div></div></div>');
+    $("#"+roomId+"-1").addClass("tabcontentRoom hideRoom paddingAll");
+        $("#"+roomId).click(function() {
+            $(".tabLinkRoom").removeClass("activeLinkRoom");
+            $("#"+roomId).addClass("activeLinkRoom");
+            $(".tabcontentRoom").addClass("hideRoom");
+            $("#"+roomId+"-1").removeClass("hideRoom");
+        });
+        tabCount += 1;
     });
 });
+
