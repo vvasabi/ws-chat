@@ -5,6 +5,7 @@ var currentRoom = '';
 var username = '';
 var refreshRequested = false;
 var session = ''; // for backend
+var tabCount = 1;
 
 // message types
 var MessageType = {
@@ -271,13 +272,46 @@ jQuery(document).ready(function()
     {
       $(this).click(function()
       {
-        RoomId = $(this).attr('id');
+        roomId = $(this).attr('id');
         $(".tabLinkRoom").removeClass("activeLinkRoom");
         $(this).addClass("activeLinkRoom");
         $(".tabcontentRoom").addClass("hideRoom");
-        $("#"+RoomId+"-1").removeClass("hideRoom")  
-        return false;	  
+        $("#"+roomId+"-1").removeClass("hideRoom");
       });
     });  
   });
-  
+
+jQuery(function(){
+    $("#tab").append('<a href="javascript:;" id="tab-'+tabCount+'">拉比</a>'); 
+    $("#tab-"+tabCount).addClass("tabLinkRoom activeLinkRoom");
+    $("#tab-1-1").append('<div id="tab-1-1"'+
+                        '<div id="chat-box" class="clear-block">'+
+                            '<div id="participants">'+
+                                '<h2>聊天室成員</h2>'+
+                                '<ul class="list"></ul>'+
+                            '</div>'+
+                        '<div id="messages" class="message-box"></div>');
+    $("#tab-"+tabCount+"-1").addClass("tabcontentRoom paddingAll");
+    tabCount += 1;
+});
+
+jQuery(function() {
+    $("#tab-plus").append('<a href="javascript:;" class="tab-plus" id="plus">+</a>');
+});
+
+jQuery(document).ready(function(){
+    
+    $(".tab-plus").click(function() {
+    $("#tab").append('<a href="javascript:; id="'+'tab-'+tabCount+'">拉比</a>'); 
+    $("#tab-"+tabCount).addClass("tabLinkRoom");
+    $("#tab-"+tabCount+"-1").append('<div id="tab-'+tabCount+'-1"'+
+                        '<div id="chat-box" class="clear-block">'+
+                            '<div id="participants">'+
+                                '<h2>聊天室成員</h2>'+
+                                '<ul class="list"></ul>'+
+                            '</div>'+
+                        '<div id="messages" class="message-box"></div></div>');
+    $("#tab-"+tabCount+"-1").addClass("tabcontentRoom hideRoom paddingAll");
+    tabCount += 1;
+    });
+});

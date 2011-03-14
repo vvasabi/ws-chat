@@ -195,32 +195,41 @@ form {
 Madao's Tab
 */
 
-.tab-box-room 
-{ 
+.tab-box-room { 
     border-bottom: 1px solid #DDD;
     padding-bottom:5px;
+    padding-right : 5px ;
     width : 620px ;
 }
-.tab-box-room a 
-{
-    border:15px solid #aaa;
+
+.tab-box-room a {
+    border:1px solid #bbb;
     color:#666666;
     padding: 5px 15px;
     text-decoration:none;
     background-color: #eee;
 }
-.tab-box-room a.activeLinkRoom 
-{ 
-    background-color: #fff; 
+
+.tab-box-room a.activeLinkRoom { 
+    background-color: #bbb; 
     border-bottom: 0; 
     padding: 6px 15px;
 }
-.tabcontentRoom 
-{ 
+
+.tabcontentRoom { 
     border: 1px solid #ddd; 
     border-top: 0;
 }
-.hideRoom 
-{ 
+
+.hideRoom { 
     display: none;
+}
+
+/*
+Madao's TabCreat
+*/
+.tab-plus{
+    border-bottom: 1px solid #DDD;
+    padding-bottom: 5px;
+    padding-left : 100px ;
 }
