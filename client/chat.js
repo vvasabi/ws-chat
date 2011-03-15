@@ -318,9 +318,23 @@ jQuery(function() {
     $("#tab-plus").append('<a href="javascript:;" class="tab-plus" id="plus">+</a>');
 });
 
+function creatNewRoom() {
+    var roomName = prompt("Room Name:");
+    joinRoom(roomName, function() {
+            var message = '成功加入聊天室「' + roomName + '」';
+            postMessage(MessageType.NOTICE, null, message);
+
+            currentRoom = roomName;
+            jQuery('#send-message-form input').removeAttr('disabled');
+        });
+    return roomName;
+}
+
 jQuery(document).ready(function(){
     $(".tab-plus").click(function() {
-    var tab = '<a href="javascript:;" id="tab-'+tabCount+'">拉比</a>';
+    var roomName = creatNewRoom().toString().trim();
+    if(roomName != null || roomName != "") {
+    var tab = '<a href="javascript:;" id="tab-'+tabCount+'">'+roomName+'</a>';
     var roomId = "tab-"+tabCount;
     var newRoom = tabCount-1;
     $("#tab").append(tab); 
@@ -340,6 +354,7 @@ jQuery(document).ready(function(){
             $("#"+roomId+"-1").removeClass("hideRoom");
         });
         tabCount += 1;
+        }
     });
 });
 
