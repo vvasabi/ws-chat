@@ -35,7 +35,7 @@ public class Connector {
             return false;
         }
         String[] ipTokens = ip.split(IP_DELIMITER_REGEX);
-        String[] sessionIpTokens = ip.split(IP_DELIMITER_REGEX);
+        String[] sessionIpTokens = session.getIp().split(IP_DELIMITER_REGEX);
         for (int i = 0; i < 2; i++) {
             if (!sessionIpTokens[i].equals(ipTokens[i])) {
                 return false;
@@ -70,6 +70,10 @@ public class Connector {
     }
 
     public boolean refreshSession(String sessionId) {
+        if (sessionId == null) {
+          return false;
+        }
+
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         Session session = findSession(sessionId);

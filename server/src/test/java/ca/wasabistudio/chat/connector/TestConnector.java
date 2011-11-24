@@ -7,8 +7,8 @@ import javax.persistence.Persistence;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import static org.testng.Assert.*;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class TestConnector {
@@ -20,7 +20,7 @@ public class TestConnector {
     private String ip = "173.34.56.54";
     private String sessionId = "d41e1d4abf776069eddd90b2d7eac6ae";
 
-    @BeforeMethod
+    @BeforeClass
     public void setup() {
         String[] paths = new String[] {
                 "META-INF/spring-jpa.xml",
@@ -35,6 +35,13 @@ public class TestConnector {
         emf = Persistence.createEntityManagerFactory(unit);
         em = emf.createEntityManager();
         em.getTransaction().begin();
+
+				// add anonymous user first
+        User anonymous = new User("anonymous");
+        em.persist(anonymous);
+        em.flush();
+
+				// actual user
         User user = new User("wasabi");
         em.persist(user);
         em.flush();
@@ -48,19 +55,19 @@ public class TestConnector {
         emf.close();
     }
 
-    @AfterMethod
+    @AfterClass
     public void tearDown() {
         context.close();
     }
 
     @Test
-    public void testValidateSessionTrue() {
+    public void testValidateSessionSameIp() {
         assertTrue(connector.validateSession(sessionId, ip));
     }
 
     @Test
-    public void testValidateSessionFalse() {
-        assertTrue(connector.validateSession(sessionId, "123.321.45.67"));
+    public void testValidateSessionDifferentIp() {
+        assertFalse(connector.validateSession(sessionId, "123.321.45.67"));
     }
 
     @Test
