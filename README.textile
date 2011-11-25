@@ -1,0 +1,3 @@
+h2. wasabi studio chat system
+
+This is the chat system for the "wasabi studio forums":http://forums.wasabistudio.ca. Front end is built using AJAX. Back end is built using Spring, RESTEasy and JPA. The communication in between is done using REST and JSON.
