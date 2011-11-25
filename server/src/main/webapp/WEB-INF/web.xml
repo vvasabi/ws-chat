@@ -84,6 +84,12 @@
 
     <servlet-mapping>
         <servlet-name>RestServlet</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/client/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>RestServlet</servlet-name>
+        <url-pattern>/room/*</url-pattern>
     </servlet-mapping>
 </web-app>
+
