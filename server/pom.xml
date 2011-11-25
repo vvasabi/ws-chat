@@ -90,6 +90,7 @@
 							<artifactId>maven-enunciate-plugin</artifactId>
 							<version>1.24</version>
 							<configuration>
+								<configFile>src/main/site/enunciate.xml</configFile>
 								<docsSubdir>restApi</docsSubdir>
 							</configuration>
 						</plugin>

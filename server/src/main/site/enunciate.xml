@@ -1,0 +1,9 @@
+<enunciate xmlns="http://enunciate.codehaus.org/"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://enunciate.codehaus.org/
+		http://enunciate.codehaus.org/schemas/enunciate-1.24.xsd">
+	<services>
+		<rest defaultRestSubcontext="/" />
+	</services>
+</enunciate>
+
