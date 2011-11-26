@@ -1,1 +1,10 @@
+*.bak
+.svn
+/.metadata
+/client/config.json
+/client/sid
+/server/.classpath
 /server/target
+/server/test-output
+/Servers
+
