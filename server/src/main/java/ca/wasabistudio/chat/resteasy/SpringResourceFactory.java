@@ -6,7 +6,12 @@ import org.jboss.resteasy.spi.InjectorFactory;
 import org.jboss.resteasy.spi.ResourceFactory;
 import org.springframework.web.context.WebApplicationContext;
 
-public final class SpringResourceFactory implements ResourceFactory {
+/**
+ * Used by RESTEasy framework to get all REST resource beans.
+ *
+ * @author wasabi
+ */
+final class SpringResourceFactory implements ResourceFactory {
 
     private WebApplicationContext context;
     private String name;

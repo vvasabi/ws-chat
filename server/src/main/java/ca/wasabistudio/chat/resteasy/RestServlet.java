@@ -15,6 +15,12 @@ import org.jboss.resteasy.spi.ResourceFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+/**
+ * Servlet that bootstraps the REST services. All environment settings are set
+ * up here.
+ *
+ * @author wasabi
+ */
 @SuppressWarnings("serial")
 public class RestServlet extends HttpServlet {
 

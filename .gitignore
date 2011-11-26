@@ -1,6 +1,7 @@
 *.bak
 .svn
 /.metadata
+/apache-tomcat-*
 /client/config.json
 /client/sid
 /server/.classpath

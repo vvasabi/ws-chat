@@ -20,6 +20,11 @@ import ca.wasabistudio.chat.support.RequestErrorException;
 import ca.wasabistudio.chat.support.Session;
 import ca.wasabistudio.chat.support.SessionException;
 
+/**
+ * REST services for working with users of the chat system.
+ *
+ * @author wasabi
+ */
 @Path("/client")
 public class ClientResource {
 
@@ -40,6 +45,12 @@ public class ClientResource {
         this.session = session;
     }
 
+    /**
+     * Get the current session id.
+     *
+     * @param request current HttpServletRequest instance
+     * @return current session id
+     */
     @GET
     @Path("/session")
     @Produces("application/json")
@@ -47,6 +58,14 @@ public class ClientResource {
         return request.getSession().getId();
     }
 
+    /**
+     * Allow a user to enter a room.
+     *
+     * @param sessionId forums sessionId of the user
+     * @param config current ServletConfig instance
+     * @param request current HttpServletRequest instance
+     * @return forums username of the user
+     */
     @POST
     @Path("/enter/{sessionId}")
     @Produces("text/plain")

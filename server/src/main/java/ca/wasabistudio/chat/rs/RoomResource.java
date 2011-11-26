@@ -25,6 +25,11 @@ import ca.wasabistudio.chat.support.RequestErrorException;
 import ca.wasabistudio.chat.support.Session;
 import ca.wasabistudio.chat.support.SessionExpiredException;
 
+/**
+ * REST services for working with chat rooms.
+ *
+ * @author wasabi
+ */
 @Path("/room")
 public class RoomResource {
 
@@ -40,6 +45,11 @@ public class RoomResource {
         this.session = session;
     }
 
+    /**
+     * Join a chatroom.
+     *
+     * @param roomKey key of the chatroom
+     */
     @POST
     @Path("/join/{room}")
     @Produces("application/json")
@@ -54,6 +64,11 @@ public class RoomResource {
         room.addClient(client);
     }
 
+    /**
+     * Get all current chatrooms.
+     *
+     * @return a list of all current chatrooms.
+     */
     @GET
     @Path("/list")
     @Produces("application/json")
@@ -65,6 +80,12 @@ public class RoomResource {
         return RoomDTO.toDTOs(rooms);
     }
 
+    /**
+     * Get all current clients of the chatroom specified.
+     *
+     * @param roomKey key of the chatroom to query
+     * @return a collection of clients in the current chatroom
+     */
     @GET
     @Path("/info/{room}/clients")
     @Produces("application/json")
@@ -80,6 +101,12 @@ public class RoomResource {
         return ClientDTO.toDTOs(clients);
     }
 
+    /**
+     * Get new messages from the chatroom since last sync.
+     *
+     * @param roomKey key of the chatroom to query
+     * @return an array of all messages from the chatroom since last sync
+     */
     @GET
     @Path("/info/{room}/messages")
     @Produces("application/json")
@@ -125,6 +152,12 @@ public class RoomResource {
         return result.toArray(new MessageDTO[messages.size()]);
     }
 
+    /**
+     * Post a new message in the chatroom.
+     *
+     * @param roomKey key of the chatroom to post to
+     * @param message message to post
+     */
     @POST
     @Path("/info/{room}/messages")
     @Produces("application/json")
