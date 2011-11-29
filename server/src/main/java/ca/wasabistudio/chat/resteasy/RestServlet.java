@@ -102,7 +102,7 @@ public class RestServlet extends HttpServlet {
         if (configBeans == null) {
             return new String[0];
         }
-        return configBeans.split(",\\s+");
+        return configBeans.trim().split(",\\s+");
     }
 
 }
