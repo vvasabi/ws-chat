@@ -306,14 +306,11 @@ function updateMessages() {
     }
     pollingMessages = true;
 
-    console.log('Polling messages now...');
-
     var key = encodeURIComponent(currentRoom);
     jQuery.ajax({
         type: 'GET',
         url: appendSession(url + 'room/info/' + key + '/messages'),
         success: function(data) {
-          console.log('Response recvd');
             pollingMessages = false;
             if (!data.length) {
                 return;
