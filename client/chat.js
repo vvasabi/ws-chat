@@ -1,11 +1,12 @@
 var username = '';
 var url = '';
 var pollInterval = 1500; // 1.5 seconds
+var participantPollInterval = 5000; // 5 seconds
 var currentRoom = '';
 var username = '';
 var refreshRequested = false;
 var session = ''; // for backend
-var tabCount = 1;
+var currentTab;
 
 // message types
 var MessageType = {
@@ -48,6 +49,73 @@ jQuery(function() {
         sendMessage(currentRoom, message);
         return false;
     });
+
+    // Madao no room tabs
+    var tabs = jQuery('#room-tabs');
+    var tab = jQuery('<li />');
+    tab.addClass('current-room');
+
+    var link = jQuery('<a href="#" />');
+    link.attr('id', 'room-tab-link-1');
+    link.text('大廳');
+    link.click(function() {
+        return false;
+    });
+    tab.append(link);
+    tabs.append(tab);
+
+    // actual room tab content
+    var roomTabContent = jQuery('#room-tab-content');
+    var roomTab = createRoomTab();
+    currentTab = roomTab.attr('id', 'room-tab-1');
+    roomTabContent.append(roomTab);
+
+    // @TODO: clean up madao's code
+/*
+    jQuery(function() {
+        $("#tab-plus").append('<a href="javascript:;" class="tab-plus" id="plus">+</a>');
+    });
+
+    function creatNewRoom() {
+        var roomName = prompt("Room Name:");
+        joinRoom(roomName, function() {
+                var message = '成功加入聊天室「' + roomName + '」';
+                postMessage(MessageType.NOTICE, null, message);
+
+                currentRoom = roomName;
+                jQuery('#send-message-form input').removeAttr('disabled');
+            });
+        return roomName;
+    }
+
+    jQuery(document).ready(function(){
+        $(".tab-plus").click(function() {
+        var roomName = creatNewRoom().toString().trim();
+        if(roomName != null || roomName != "") {
+        var tab = '<a href="javascript:;" id="tab-'+tabCount+'">'+roomName+'</a>';
+        var roomId = "tab-"+tabCount;
+        var newRoom = tabCount-1;
+        $("#tab").append(tab);
+        $("#"+roomId).addClass("tabLinkRoom");
+        $("#tab-room").append('<div id="'+roomId+'-1">'+
+                            '<div id="chat-box" class="clear-block">'+
+                                '<div id="participants">'+
+                                    '<h2>聊天室成員</h2>'+
+                                    '<ul class="list"></ul>'+
+                                '</div>'+
+                            '<div id="messages" class="message-box"></div></div></div>');
+        $("#"+roomId+"-1").addClass("tabcontentRoom hideRoom paddingAll");
+            $("#"+roomId).click(function() {
+                $(".tabLinkRoom").removeClass("activeLinkRoom");
+                $("#"+roomId).addClass("activeLinkRoom");
+                $(".tabcontentRoom").addClass("hideRoom");
+                $("#"+roomId+"-1").removeClass("hideRoom");
+            });
+            tabCount += 1;
+            }
+        });
+    });*/
+
 });
 
 function msie() {
@@ -153,7 +221,7 @@ function appendSession(url) {
 }
 
 function postMessage(type, source, body, time) {
-    var element = jQuery('#messages');
+    var element = currentTab.find('.messages');
     var cssClass = '';
     switch (type) {
         case MessageType.REGULAR:
@@ -213,7 +281,7 @@ function updateListOfClients() {
         type: 'GET',
         url: appendSession(url + 'room/info/' + key + '/clients'),
         success: function(data) {
-            var list = jQuery('#participants .list');
+            var list = currentTab.find('.participants').children('.list');
             if (!data.length) {
                 return;
             }
@@ -225,13 +293,11 @@ function updateListOfClients() {
                 }
                 list.append('<li>' + name + '</li>');
             }
-            element.html(list);
         },
         error: function() {
-            var message = '無法更新聊天室成員，稍後會再試。';
-            postMessage(MessageType.ERROR, null, message);
+            // NOOP
         },
-        timeout: pollInterval,
+        timeout: participantPollInterval,
         dataType: 'json'
     });
 }
@@ -249,7 +315,6 @@ function updateMessages() {
         type: 'GET',
         url: appendSession(url + 'room/info/' + key + '/messages'),
         success: function(data) {
-            var element = jQuery('#messages');
             if (!data.length) {
                 return;
             }
@@ -266,95 +331,16 @@ function updateMessages() {
     });
 }
 
-/*
-function updateTab() {
-    //jQuery(document).ready(function() {
-        $(".tabLinkRoom").each(function() {
-            $(this).click(function() {
-                roomId = $(this).attr('id');
-                $(".tabLinkRoom").removeClass("activeLinkRoom");
-                $(this).addClass("activeLinkRoom");
-                $(".tabcontentRoom").addClass("hideRoom");
-                $("#"+roomId+"-1").removeClass("hideRoom");
-            });
-        }); 
-        
-    //});
+function createRoomTab() {
+    var roomTab = jQuery('<div />');
+    roomTab.addClass('room-tab');
+    roomTab.addClass('clear-block');
+
+    var participantBox = jQuery('<div />');
+    participantBox.addClass('participants');
+    participantBox.append('<h2>聊天室成員</h2>');
+    participantBox.append('<ul class="list" />');
+    roomTab.append(participantBox);
+    roomTab.append('<div class="messages" />');
+    return roomTab;
 }
-*/
-
-jQuery(function(){
-    var tab = '<a href="javascript:;" id="tab-'+tabCount+'">拉比</a>';
-    $("#tab").append(tab);
-    $("#tab-"+tabCount).addClass("tabLinkRoom activeLinkRoom");
-    /*$("#tab").click(function() {
-        roomId = $(this).attr('id');
-        $(".tabLinkRoom").removeClass("activeLinkRoom");
-        $(this).addClass("activeLinkRoom");
-        $(".tabcontentRoom").addClass("hideRoom");
-        $("#"+roomId+"-1").removeClass("hideRoom");
-    });*/
-    $("#tab-room").append('<div id="tab-'+tabCount+'-1">'+
-                        '<div id="chat-box" class="clear-block">'+
-                            '<div id="participants">'+
-                                '<h2>聊天室成員</h2>'+
-                                '<ul class="list"></ul>'+
-                            '</div>'+
-                        '<div id="messages" class="message-box"></div>'+
-                        '</div>'+
-                        '</div>');
-    $("#tab-1-1").addClass("tabcontentRoom paddingAll ");
-        $("#tab-1").click(function() {
-            $(".tabLinkRoom").removeClass("activeLinkRoom");
-            $("#tab-1").addClass("activeLinkRoom");
-            $(".tabcontentRoom").addClass("hideRoom");
-            $("#tab-1-1").removeClass("hideRoom");
-        });
-    tabCount += 1;
-    
-});
-
-jQuery(function() {
-    $("#tab-plus").append('<a href="javascript:;" class="tab-plus" id="plus">+</a>');
-});
-
-function creatNewRoom() {
-    var roomName = prompt("Room Name:");
-    joinRoom(roomName, function() {
-            var message = '成功加入聊天室「' + roomName + '」';
-            postMessage(MessageType.NOTICE, null, message);
-
-            currentRoom = roomName;
-            jQuery('#send-message-form input').removeAttr('disabled');
-        });
-    return roomName;
-}
-
-jQuery(document).ready(function(){
-    $(".tab-plus").click(function() {
-    var roomName = creatNewRoom().toString().trim();
-    if(roomName != null || roomName != "") {
-    var tab = '<a href="javascript:;" id="tab-'+tabCount+'">'+roomName+'</a>';
-    var roomId = "tab-"+tabCount;
-    var newRoom = tabCount-1;
-    $("#tab").append(tab); 
-    $("#"+roomId).addClass("tabLinkRoom");
-    $("#tab-room").append('<div id="'+roomId+'-1">'+
-                        '<div id="chat-box" class="clear-block">'+
-                            '<div id="participants">'+
-                                '<h2>聊天室成員</h2>'+
-                                '<ul class="list"></ul>'+
-                            '</div>'+
-                        '<div id="messages" class="message-box"></div></div></div>');
-    $("#"+roomId+"-1").addClass("tabcontentRoom hideRoom paddingAll");
-        $("#"+roomId).click(function() {
-            $(".tabLinkRoom").removeClass("activeLinkRoom");
-            $("#"+roomId).addClass("activeLinkRoom");
-            $(".tabcontentRoom").addClass("hideRoom");
-            $("#"+roomId+"-1").removeClass("hideRoom");
-        });
-        tabCount += 1;
-        }
-    });
-});
-

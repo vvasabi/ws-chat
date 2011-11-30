@@ -3,7 +3,7 @@
     <head>
         <title>流連忘返聊天室</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <script type="text/javascript" src="jquery-1.5.1.min.js"></script>
+        <script type="text/javascript" src="jquery-1.7.1.min.js"></script>
         <script type="text/javascript" src="json2.js"></script>
         <script type="text/javascript" src="chat.js"></script>
         <link href="chat.css" rel="stylesheet" type="text/css" />
@@ -26,11 +26,8 @@
                 <h1>流連忘返聊天室</h1>
 
                 <div id="content">
-                    <div class="tab-box-room">
-                        <span id="tab"></span>
-                        <span id="tab-plus"></span>
-                    </div> 
-                    <div id="tab-room"></div>
+                    <ul id="room-tabs" class="clear-block"></ul>
+                    <div id="room-tab-content"></div>
                     <div id="control-box">
                         <form id="send-message-form">
                             <input id="message" type="text" disabled="disabled" />

@@ -30,45 +30,6 @@ form {
   padding: 15px;
 }
 
-#wrapper #content #chat-box {
-    background: #bbb;
-    padding: 15px;
-}
-
-#wrapper #content #chat-box #messages {
-    background: #fff;
-    width: 67%;
-    height: 310px;
-    padding: 5px 1%;
-    overflow-y: scroll;
-    float: left;
-}
-
-#wrapper #content #chat-box #messages p {
-    margin: 5px 0;
-}
-
-#wrapper #content #chat-box #participants {
-    background: #fafafa;
-    width: 27%;
-    height: 300px;
-    padding: 10px 1%;
-    float: right;
-}
-
-#wrapper #content #chat-box #participants h2 {
-    font-size: 1.1em;
-    font-weight: normal;
-    text-align: center;
-    margin: 0 0 1em;
-}
-
-#wrapper #content #chat-box #participants ul.list {
-    list-style: none;
-    margin: 5px 0;
-    padding: 0 0 0 10px;
-}
-
 #wrapper #content #control-box {
     background: #bbb;
     padding: 0 15px 15px;
@@ -111,6 +72,74 @@ form {
 }
 
 /**
+ * Madao's Room Tabs
+ */
+
+.room-tab {
+    background: #bbb;
+    padding: 15px;
+}
+
+.room-tab .messages {
+    background: #fff;
+    width: 67%;
+    height: 310px;
+    padding: 5px 1%;
+    overflow-y: scroll;
+    float: left;
+}
+
+.room-tab .messages p {
+    margin: 5px 0;
+}
+
+.room-tab .participants {
+    background: #fafafa;
+    width: 27%;
+    height: 300px;
+    padding: 10px 1%;
+    float: right;
+}
+
+.room-tab .participants h2 {
+    font-size: 1.1em;
+    font-weight: normal;
+    text-align: center;
+    margin: 0 0 1em;
+}
+
+.room-tab .participants ul.list {
+    list-style: none;
+    margin: 5px 0;
+    padding: 0 0 0 10px;
+}
+
+/**
+ * Madao's Tabs
+ */
+
+#room-tabs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#room-tabs li {
+    background: #eee;
+    padding: 10px 15px;
+    float: left;
+}
+
+#room-tabs li a {
+    color: #444;
+    text-decoration: none;
+}
+
+#room-tabs li.current-room {
+    background: #bbb;
+}
+
+/**
  * Style classes
  */
 
@@ -144,6 +173,9 @@ form {
 }
 /* End hide from IE-mac */
 
+/**
+ * IE Mask
+ */
 #ie-mask {
     background: rgba(255, 255, 255, 0.9);
 
@@ -188,48 +220,4 @@ form {
     height: 23px;
     padding: 5px 0 0 0;
     display: block;
-}
-
-
-/*
-Madao's Tab
-*/
-
-.tab-box-room { 
-    border-bottom: 1px solid #DDD;
-    padding-bottom:5px;
-    padding-right : 5px ;
-    width : 620px ;
-}
-
-.tab-box-room a {
-    border:1px solid #bbb;
-    color:#666666;
-    padding: 5px 15px;
-    text-decoration:none;
-    background-color: #eee;
-}
-
-.tab-box-room a.activeLinkRoom { 
-    background-color: #bbb; 
-    border-bottom: 0; 
-    padding: 6px 15px;
-}
-
-.tabcontentRoom { 
-    border: 1px solid #ddd; 
-    border-top: 0;
-}
-
-.hideRoom { 
-    display: none;
-}
-
-/*
-Madao's TabCreat
-*/
-.tab-plus{
-    border-bottom: 1px solid #DDD;
-    padding-bottom: 5px;
-    padding-left : 100px ;
 }
