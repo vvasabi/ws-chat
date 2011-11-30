@@ -1,10 +1,11 @@
 var username = '';
 var url = '';
-var pollInterval = 1500; // 1.5 seconds
+var longPollTimeout = 75000; // 75 seconds
+var pollInterval = 500; // short because we use long poll
 var participantPollInterval = 5000; // 5 seconds
+var pollingMessages = false;
 var currentRoom = '';
 var username = '';
-var refreshRequested = false;
 var session = ''; // for backend
 var currentTab;
 
@@ -145,7 +146,8 @@ function setupServerSession() {
         url: url + 'client/session',
         success: function(data) {
             session = data;
-            setInterval(pollUpdate, pollInterval);
+            setInterval(updateListOfClients, participantPollInterval);
+            setInterval(updateMessages, pollInterval);
             userInit();
         },
         error: function(xhr) {
@@ -205,8 +207,7 @@ function sendMessage(roomKey, message) {
         type: 'POST',
         url: appendSession(url + 'room/info/' + key + '/messages'),
         success: function() {
-            updateMessages();
-            refreshRequested = true;
+            // NOOP
         },
         error: function(xhr, textStatus) {
             var message = '無法送出訊息： ' + textStatus;
@@ -264,14 +265,6 @@ function postMessage(type, source, body, time) {
     });
 }
 
-/**
- * Get updates from the server.
- */
-function pollUpdate() {
-  updateListOfClients();
-  updateMessages();
-}
-
 function updateListOfClients() {
     if (!currentRoom) {
         return;
@@ -306,15 +299,22 @@ function updateMessages() {
     if (!currentRoom) {
         return;
     }
-    if (refreshRequested) {
-        refreshRequested = false;
+
+    // do not poll if already doing so
+    if (pollingMessages) {
         return;
     }
+    pollingMessages = true;
+
+    console.log('Polling messages now...');
+
     var key = encodeURIComponent(currentRoom);
     jQuery.ajax({
         type: 'GET',
         url: appendSession(url + 'room/info/' + key + '/messages'),
         success: function(data) {
+          console.log('Response recvd');
+            pollingMessages = false;
             if (!data.length) {
                 return;
             }
@@ -323,10 +323,12 @@ function updateMessages() {
             }
         },
         error: function() {
+            pollingMessages = false;
+
             var message = '更新訊息失敗，稍後會再嘗試。';
             postMessage(MessageType.ERROR, null, message);
         },
-        timeout: pollInterval,
+        timeout: longPollTimeout,
         dataType: 'json'
     });
 }

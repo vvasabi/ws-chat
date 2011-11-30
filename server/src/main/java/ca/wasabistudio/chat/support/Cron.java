@@ -15,8 +15,8 @@ import ca.wasabistudio.chat.entity.Room;
 
 public class Cron {
 
-    // 10 seconds
-    private static final long TIMEOUT = 10000;
+    // 90 seconds
+    private static final long TIMEOUT = 90000;
 
     private EntityManager em;
     private Connector connector;

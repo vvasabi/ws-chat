@@ -1,5 +1,6 @@
 package ca.wasabistudio.chat.rs;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,6 +33,9 @@ import ca.wasabistudio.chat.support.SessionExpiredException;
  */
 @Path("/room")
 public class RoomResource {
+
+    private static final int LONG_POLL_TIMEOUT = 60000; // 60 seconds
+    private static final int POLL_QUERY_INTERVAL = 2000; // 2 seconds
 
     private EntityManager em;
     private Session session;
@@ -110,18 +114,50 @@ public class RoomResource {
     @GET
     @Path("/info/{room}/messages")
     @Produces("application/json")
-    @Transactional
-    @SuppressWarnings("unchecked")
     public MessageDTO[] getMessages(@PathParam("room") String roomKey) {
-        Client client = getClient();
         Room room = getRoom(roomKey);
         if (room == null) {
             throw new RequestErrorException("Room cannot be found.");
         }
 
+        // mark that the client has sync'ed
+        syncClient();
+
+        // start long poll
+        try {
+            int time = 0;
+            List<Message> messages = new ArrayList<Message>();
+            while (time < LONG_POLL_TIMEOUT) {
+                messages = loadMessages(room);
+                if (messages.size() > 0) {
+                    break;
+                }
+
+                Thread.sleep(POLL_QUERY_INTERVAL);
+                time += POLL_QUERY_INTERVAL;
+            }
+
+            List<MessageDTO> result = MessageDTO.toDTOs(messages);
+            return result.toArray(new MessageDTO[messages.size()]);
+        } catch (InterruptedException exception) {
+            // return an empty array
+            return new MessageDTO[0];
+        }
+    }
+
+    /**
+     * Do so here to commit the transaction right away.
+     */
+    @Transactional
+    private void syncClient() {
+        getClient().sync();
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Message> loadMessages(Room room) {
         // acquire messages
         List<Message> messages;
-        RoomSetting setting = client.getRoomSetting(room);
+        RoomSetting setting = getClient().getRoomSetting(room);
         Message lastMessage = setting.getLastMessage();
         if (lastMessage == null) {
             messages = em.createQuery("select m from Message m " +
@@ -145,11 +181,7 @@ public class RoomResource {
             setting.setLastMessage(last);
         }
 
-        // mark that the client has sync'ed
-        client.sync();
-
-        List<MessageDTO> result = MessageDTO.toDTOs(messages);
-        return result.toArray(new MessageDTO[messages.size()]);
+        return messages;
     }
 
     /**
