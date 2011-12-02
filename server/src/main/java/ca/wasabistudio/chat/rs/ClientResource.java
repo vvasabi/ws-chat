@@ -1,5 +1,7 @@
 package ca.wasabistudio.chat.rs;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.ServletConfig;
@@ -14,6 +16,7 @@ import javax.ws.rs.core.Context;
 import org.springframework.transaction.annotation.Transactional;
 
 import ca.wasabistudio.chat.connector.Connector;
+import ca.wasabistudio.chat.dto.ClientDTO;
 import ca.wasabistudio.chat.entity.Client;
 import ca.wasabistudio.chat.support.AlreadyJoinedException;
 import ca.wasabistudio.chat.support.RequestErrorException;
@@ -96,6 +99,21 @@ public class ClientResource {
         em.persist(client);
         session.setClient(client);
         return username;
+    }
+
+    /**
+     * Get all clients currently in the chat room.
+     *
+     * @return all clients currently in the chat room
+     */
+    @GET
+    @Path("/list")
+    @Produces("application/json")
+    @SuppressWarnings("unchecked")
+    public List<ClientDTO> getClients() {
+        List<Client> clients = (List<Client>)em.createQuery("select c from Client c")
+                .getResultList();
+        return ClientDTO.toDTOs(clients);
     }
 
     private String getIp(HttpServletRequest request) {
