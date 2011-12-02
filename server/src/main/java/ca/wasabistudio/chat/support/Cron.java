@@ -30,12 +30,12 @@ public class Cron {
         this.connector = connector;
     }
 
-    @Transactional
     public void run() {
         removeTimeoutUsers();
         refreshSessions();
     }
 
+    @Transactional
     @SuppressWarnings("unchecked")
     private void removeTimeoutUsers() {
         Calendar now = Calendar.getInstance();
@@ -55,6 +55,7 @@ public class Cron {
         }
     }
 
+    @Transactional
     @SuppressWarnings("unchecked")
     private void refreshSessions() {
         List<Client> clients = em.createQuery("select c from Client c")

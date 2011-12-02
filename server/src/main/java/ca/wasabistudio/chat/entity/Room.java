@@ -48,7 +48,7 @@ public class Room implements Serializable {
     @Access(AccessType.FIELD)
     private List<Message> messages;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name="rooms_clients",
         joinColumns=@JoinColumn(name="room_key"),
         inverseJoinColumns=@JoinColumn(name="username"))

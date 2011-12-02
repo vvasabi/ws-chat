@@ -36,6 +36,7 @@ public class TestCron {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         Client client = new Client("moneycash");
+        client.setSessionId("test");
         em.persist(client);
         Room room = new Room("room");
         em.persist(room);
@@ -46,7 +47,6 @@ public class TestCron {
 
     @AfterMethod
     public void tearDown() {
-        emf.close();
         context.close();
     }
 
@@ -57,7 +57,7 @@ public class TestCron {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         Calendar now = Calendar.getInstance();
-        Date expired = new Date(now.getTimeInMillis() - 60000);
+        Date expired = new Date(now.getTimeInMillis() - 180000);
         Client client = em.find(Client.class, "moneycash");
         Field lastSync = client.getClass().getDeclaredField("lastSync");
         lastSync.setAccessible(true);

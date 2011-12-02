@@ -36,12 +36,12 @@ public class TestConnector {
         em = emf.createEntityManager();
         em.getTransaction().begin();
 
-				// add anonymous user first
+        // add anonymous user first
         User anonymous = new User("anonymous");
         em.persist(anonymous);
         em.flush();
 
-				// actual user
+        // actual user
         User user = new User("wasabi");
         em.persist(user);
         em.flush();

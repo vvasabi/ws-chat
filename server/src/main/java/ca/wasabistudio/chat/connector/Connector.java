@@ -74,14 +74,13 @@ public class Connector {
           return false;
         }
 
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
         Session session = findSession(sessionId);
         if (session == null) {
-            transaction.commit();
             return false;
         }
 
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
         session.setLastUpdate(Calendar.getInstance());
         transaction.commit();
         return true;
