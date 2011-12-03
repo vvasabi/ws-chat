@@ -1,7 +1,7 @@
 var username = '';
 var url = '';
 var longPollTimeout = 75000; // 75 seconds
-var pollInterval = 100; // short because we use long poll
+var pollInterval = 500; // short because we use long poll
 var participantPollInterval = 5000; // 5 seconds
 var pollingMessages = false;
 var currentRoom = '';
@@ -9,6 +9,10 @@ var username = '';
 var session = ''; // for backend
 var currentTab;
 var windowFocused = true;
+var failCount = 0;
+var failThreshold = 5;
+var syncMessageInterval;
+var syncClientsInterval;
 
 // message types
 var MessageType = {
@@ -158,6 +162,10 @@ function setupServerSession() {
 			userInit();
 		},
 		error: function(xhr) {
+			if (!xhr.status) {
+				postMessage(MessageType.ERROR, null, "無法連線至聊天室，請稍後再試。");
+				return;
+			}
 			if (xhr.status == 403) {
 				postMessage(MessageType.ERROR, null, "請先登入論壇。");
 				return;
@@ -182,8 +190,8 @@ function userInit() {
 			currentRoom = roomKey;
 			jQuery('#send-message-form input').removeAttr('disabled');
 
-			setInterval(updateListOfClients, participantPollInterval);
-			setInterval(updateMessages, pollInterval);
+			syncClientsInterval = setInterval(updateListOfClients, participantPollInterval);
+			syncMessageInterval = setInterval(updateMessages, pollInterval);
 			updateListOfClients();
 		});
 	});
@@ -289,6 +297,7 @@ function updateListOfClients() {
 		type: 'GET',
 		url: appendSession(url + 'room/info/' + key + '/clients'),
 		success: function(data) {
+			failCount = 0;
 			var list = currentTab.find('.participants').children('.list');
 			if (!data.length) {
 				return;
@@ -303,7 +312,8 @@ function updateListOfClients() {
 			}
 		},
 		error: function() {
-			// NOOP
+			failCount++;
+			checkFailCount();
 		},
 		timeout: participantPollInterval,
 		dataType: 'json'
@@ -326,6 +336,7 @@ function updateMessages() {
 		type: 'GET',
 		url: appendSession(url + 'room/info/' + key + '/messages'),
 		success: function(data) {
+			failCount = 0;
 			pollingMessages = false;
 			if (!data.length) {
 				return;
@@ -340,6 +351,8 @@ function updateMessages() {
 
 			var message = '更新訊息失敗，稍後會再嘗試。';
 			postMessage(MessageType.ERROR, null, message);
+			failCount++;
+			checkFailCount();
 		},
 		timeout: longPollTimeout,
 		dataType: 'json'
@@ -363,5 +376,15 @@ function createRoomTab() {
 function notify() {
 	if (!windowFocused) {
 		jQuery('#notification')[0].play();
+	}
+}
+
+function checkFailCount() {
+	if (failCount >= failThreshold) {
+		var message = '與聊天室失去連線，請重新整理頁面。';
+		postMessage(MessageType.ERROR, null, message);
+
+		clearInterval(syncMessageInterval);
+		clearInterval(syncClientsInterval);
 	}
 }
