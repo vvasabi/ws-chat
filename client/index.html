@@ -1,41 +1,44 @@
 ﻿<!DOCTYPE html>
 <html>
-    <head>
-        <title>流連忘返聊天室</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <script type="text/javascript" src="jquery-1.7.1.min.js"></script>
-        <script type="text/javascript" src="json2.js"></script>
-        <script type="text/javascript" src="chat.js"></script>
-        <link href="chat.css" rel="stylesheet" type="text/css" />
-    </head>
-    <body>
-        <div id="ie-mask">
-            <div class="message-box">
-                <p>
-                    很抱歉，本聊天室不支援Internet Explorer。請使用<a
-                        href="http://www.mozilla.com/zh-TW/firefox/">Firefox</a>，<a
-                        href="http://www.google.com.tw/chrome">Chrome</a>或<a
-                        href="http://www.apple.com/tw/safari/">Safari</a>來登入本聊天室。
-                </p>
-                <div class="ok">
-                    <a href="http://www.apple.com/tw/safari/">確定</a>
-                </div>
-            </div>
-        </div>
-            <div id="wrapper">
-                <h1>流連忘返聊天室</h1>
+<head>
+	<title>流連忘返聊天室</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="json2.js"></script>
+	<script type="text/javascript" src="chat.js"></script>
+	<link href="chat.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div id="ie-mask">
+		<div class="message-box">
+			<p>
+				很抱歉，本聊天室不支援Internet Explorer。請使用<a
+					href="http://www.mozilla.com/zh-TW/firefox/">Firefox</a>，<a
+					href="http://www.google.com.tw/chrome">Chrome</a>或<a
+					href="http://www.apple.com/tw/safari/">Safari</a>來登入本聊天室。
+			</p>
+			<div class="ok">
+				<a href="http://www.apple.com/tw/safari/">確定</a>
+			</div>
+		</div>
+	</div>
+	<div id="wrapper">
+		<h1>流連忘返聊天室</h1>
 
-                <div id="content">
-                    <ul id="room-tabs" class="clear-block"></ul>
-                    <div id="room-tab-content"></div>
-                    <div id="control-box">
-                        <form id="send-message-form">
-                            <input id="message" type="text" disabled="disabled" />
-                            <input id="send-button" type="submit" value="送出"
-                                    disabled="disabled" />
-                        </form>
-                    </div>
-                </div>
-            </div>
-    </body>
+		<div id="content">
+			<ul id="room-tabs" class="clear-block"></ul>
+			<div id="room-tab-content"></div>
+			<div id="control-box">
+				<form id="send-message-form">
+					<input id="message" type="text" disabled="disabled" />
+					<input id="send-button" type="submit" value="送出"
+							disabled="disabled" />
+				</form>
+			</div>
+			<audio id="notification">
+				<source src="audio/ICQ-OOO.wav" type="audio/wave" />
+			</audio>
+		</div>
+	</div>
+</body>
 </html>

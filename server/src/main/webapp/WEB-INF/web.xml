@@ -1,95 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-        http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-    version="2.5" metadata-complete="true">
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+		http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5" metadata-complete="true">
 
-    <display-name>wasabi studio chat room</display-name>
+	<display-name>wasabi studio chat room</display-name>
 
-    <!-- Application Specific -->
+	<!-- Application Specific -->
 
-    <context-param>
-        <param-name>mode</param-name>
-        <param-value>DEVELOPMENT</param-value>
-    </context-param>
+	<context-param>
+		<param-name>mode</param-name>
+		<param-value>DEVELOPMENT</param-value>
+	</context-param>
 
-    <!-- Spring -->
+	<!-- Spring -->
 
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>
-            classpath:/META-INF/spring-jpa.xml,
-            classpath:/META-INF/cron.xml,
-            classpath:/META-INF/connector.xml,
-            /WEB-INF/services.xml
-        </param-value>
-    </context-param>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			classpath:/META-INF/spring-jpa.xml,
+			classpath:/META-INF/cron.xml,
+			classpath:/META-INF/connector.xml,
+			/WEB-INF/services.xml
+		</param-value>
+	</context-param>
 
-    <listener>
-        <listener-class>
-            org.springframework.web.context.ContextLoaderListener
-        </listener-class>
-    </listener>
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
 
-    <listener>
-        <listener-class>
-            org.springframework.web.context.request.RequestContextListener
-        </listener-class>
-    </listener>
+	<listener>
+		<listener-class>
+			org.springframework.web.context.request.RequestContextListener
+		</listener-class>
+	</listener>
 
-    <!-- RESTEasy Config -->
+	<!-- RESTEasy Config -->
 
-    <context-param>
-        <param-name>resteasy.providers</param-name>
-        <param-value>
-            ca.wasabistudio.chat.support.AlreadyJoinedExceptionMapper,
-            ca.wasabistudio.chat.support.NotFoundExceptionMapper,
-            ca.wasabistudio.chat.support.RequestErrorExceptionMapper,
-            ca.wasabistudio.chat.support.SessionExceptionMapper
-        </param-value>
-    </context-param>
+	<context-param>
+		<param-name>resteasy.providers</param-name>
+		<param-value>
+			ca.wasabistudio.chat.support.NotFoundExceptionMapper,
+			ca.wasabistudio.chat.support.RequestErrorExceptionMapper,
+			ca.wasabistudio.chat.support.SessionExceptionMapper
+		</param-value>
+	</context-param>
 
-    <listener>
-        <listener-class>
-            org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap
-        </listener-class>
-    </listener>
+	<listener>
+		<listener-class>
+			org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap
+		</listener-class>
+	</listener>
 
-    <servlet>
-        <servlet-name>RestServlet</servlet-name>
-        <servlet-class>
-            ca.wasabistudio.chat.resteasy.RestServlet
-        </servlet-class>
-        <init-param>
-            <param-name>beans</param-name>
-            <param-value>
-                clientService, roomService
-            </param-value>
-        </init-param>
-        <init-param>
-            <param-name>Access-Control-Allow-Origin</param-name>
-            <param-value>*</param-value>
-        </init-param>
-        <init-param>
-            <param-name>Access-Control-Allow-Methods</param-name>
-            <param-value>OPTIONS, GET, POST, PUT, DELETE</param-value>
-        </init-param>
-        <init-param>
-            <param-name>Access-Control-Allow-Headers</param-name>
-            <param-value>Content-Type, X-Requested-With</param-value>
-        </init-param>
-    </servlet>
+	<servlet>
+		<servlet-name>RestServlet</servlet-name>
+		<servlet-class>
+			ca.wasabistudio.chat.resteasy.RestServlet
+		</servlet-class>
+		<init-param>
+			<param-name>beans</param-name>
+			<param-value>
+				clientService, roomService
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>Access-Control-Allow-Origin</param-name>
+			<param-value>*</param-value>
+		</init-param>
+		<init-param>
+			<param-name>Access-Control-Allow-Methods</param-name>
+			<param-value>OPTIONS, GET, POST, PUT, DELETE</param-value>
+		</init-param>
+		<init-param>
+			<param-name>Access-Control-Allow-Headers</param-name>
+			<param-value>Content-Type, X-Requested-With</param-value>
+		</init-param>
+	</servlet>
 
-    <servlet-mapping>
-        <servlet-name>RestServlet</servlet-name>
-        <url-pattern>/client/*</url-pattern>
-    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RestServlet</servlet-name>
+		<url-pattern>/client/*</url-pattern>
+	</servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>RestServlet</servlet-name>
-        <url-pattern>/room/*</url-pattern>
-    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RestServlet</servlet-name>
+		<url-pattern>/room/*</url-pattern>
+	</servlet-mapping>
 </web-app>
 
