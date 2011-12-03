@@ -135,7 +135,7 @@ public class RoomResource {
 			int time = 0;
 			List<Message> messages = new ArrayList<Message>();
 			while (time < LONG_POLL_TIMEOUT) {
-				messages = loadMessages(room, getClient(sessionId));
+				messages = loadMessages(room, sessionId);
 				if (messages.size() > 0) {
 					break;
 				}
@@ -160,11 +160,12 @@ public class RoomResource {
 		getClient(sessionId).sync();
 	}
 
+	@Transactional
 	@SuppressWarnings("unchecked")
-	private List<Message> loadMessages(Room room, Client client) {
+	private List<Message> loadMessages(Room room, String sessionId) {
 		// acquire messages
 		List<Message> messages;
-		RoomSetting setting = client.getRoomSetting(room);
+		RoomSetting setting = getClient(sessionId).getRoomSetting(room);
 		Message lastMessage = setting.getLastMessage();
 		if (lastMessage == null) {
 			messages = em.createQuery("select m from Message m " +
