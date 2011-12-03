@@ -131,7 +131,6 @@ public class RoomResource {
 		syncClient(sessionId);
 
 		// start long poll
-		System.out.println("Start polling");
 		try {
 			int time = 0;
 			List<Message> messages = new ArrayList<Message>();

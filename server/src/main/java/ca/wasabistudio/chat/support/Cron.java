@@ -62,7 +62,6 @@ public class Cron {
 			.getResultList();
 		for (Client client : clients) {
 			if (!connector.refreshSession(client.getSessionId())) {
-				System.out.println("Can't refresh session!");
 				removeClient(client);
 			}
 		}
@@ -71,7 +70,6 @@ public class Cron {
 	@Transactional
 	private void removeClient(Client client) {
 		client.exitAllRooms();
-		System.out.println("Removing client...");
 		em.remove(client);
 	}
 
