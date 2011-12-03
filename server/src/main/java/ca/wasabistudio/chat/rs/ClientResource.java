@@ -81,8 +81,9 @@ public class ClientResource {
 			throw new RequestErrorException(message);
 		}
 
+		boolean production = isProductionMode(config);
 		String username = sessionId;
-		if (isProductionMode(config)) {
+		if (production) {
 			if (!connector.validateSession(sessionId, getIp(request))) {
 				throw new SessionException("Unable to enter.");
 			}
@@ -94,7 +95,9 @@ public class ClientResource {
 		removeClient(username);
 
 		Client client = new Client(username);
-		client.setSessionId(sessionId);
+		client.setSessionId(production ? sessionId : null);
+		client.setChatSessionId(request.getSession().getId());
+		client.sync();
 		em.persist(client);
 		session.setClient(client);
 		return username;

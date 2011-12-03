@@ -34,6 +34,9 @@ public class Client implements Serializable {
 	@Column(name="session_id", length=32)
 	private String sessionId;
 
+	@Column(name="chat_session_id", length=32)
+	private String chatSessionId;
+
 	@Column(name="last_sync")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Access(AccessType.FIELD)
@@ -78,6 +81,14 @@ public class Client implements Serializable {
 
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
+	}
+
+	public String getChatSessionId() {
+		return chatSessionId;
+	}
+
+	public void setChatSessionId(String sessionId) {
+		chatSessionId = sessionId;
 	}
 
 	public Date getLastSync() {

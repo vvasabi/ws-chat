@@ -1,7 +1,7 @@
 var username = '';
 var url = '';
 var longPollTimeout = 75000; // 75 seconds
-var pollInterval = 500; // short because we use long poll
+var pollInterval = 250; // short because we use long poll
 var participantPollInterval = 5000; // 5 seconds
 var pollingMessages = false;
 var currentRoom = '';
