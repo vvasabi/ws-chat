@@ -31,6 +31,7 @@ public class TestRoomResource {
 		String[] paths = new String[] {
 				"META-INF/spring-jpa.xml",
 				"META-INF/connector.xml",
+				"META-INF/support.xml",
 				"META-INF/services.xml"
 		};
 		httpSession = new MockHttpSession("testSession");

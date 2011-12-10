@@ -20,63 +20,64 @@ import ca.wasabistudio.chat.support.Cron;
 
 public class TestCron {
 
-    private ClassPathXmlApplicationContext context;
-    private EntityManagerFactory emf;
+	private ClassPathXmlApplicationContext context;
+	private EntityManagerFactory emf;
 
-    @BeforeMethod
-    public void setup() {
-        String[] paths = new String[] {
-                "META-INF/spring-jpa.xml",
-                "META-INF/connector.xml",
-                "META-INF/cron.xml",
-                "META-INF/services.xml"
-        };
-        context = new ClassPathXmlApplicationContext(paths);
-        emf = context.getBean(EntityManagerFactory.class);
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        Client client = new Client("moneycash");
-        client.setSessionId("test");
-        em.persist(client);
-        Room room = new Room("room");
-        em.persist(room);
-        room.addClient(client);
-        em.getTransaction().commit();
-        em.close();
-    }
+	@BeforeMethod
+	public void setup() {
+		String[] paths = new String[] {
+				"META-INF/spring-jpa.xml",
+				"META-INF/connector.xml",
+				"META-INF/cron.xml",
+				"META-INF/support.xml",
+				"META-INF/services.xml"
+		};
+		context = new ClassPathXmlApplicationContext(paths);
+		emf = context.getBean(EntityManagerFactory.class);
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		Client client = new Client("moneycash");
+		client.setSessionId("test");
+		em.persist(client);
+		Room room = new Room("room");
+		em.persist(room);
+		room.addClient(client);
+		em.getTransaction().commit();
+		em.close();
+	}
 
-    @AfterMethod
-    public void tearDown() {
-        context.close();
-    }
+	@AfterMethod
+	public void tearDown() {
+		context.close();
+	}
 
-    @Test
-    public void testRun() throws SecurityException, NoSuchFieldException,
-            IllegalArgumentException, IllegalAccessException {
-        // make client expire
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        Calendar now = Calendar.getInstance();
-        Date expired = new Date(now.getTimeInMillis() - 180000);
-        Client client = em.find(Client.class, "moneycash");
-        Field lastSync = client.getClass().getDeclaredField("lastSync");
-        lastSync.setAccessible(true);
-        lastSync.set(client, expired);
-        em.getTransaction().commit();
-        em.close();
+	@Test
+	public void testRun() throws SecurityException, NoSuchFieldException,
+			IllegalArgumentException, IllegalAccessException {
+		// make client expire
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		Calendar now = Calendar.getInstance();
+		Date expired = new Date(now.getTimeInMillis() - 180000);
+		Client client = em.find(Client.class, "moneycash");
+		Field lastSync = client.getClass().getDeclaredField("lastSync");
+		lastSync.setAccessible(true);
+		lastSync.set(client, expired);
+		em.getTransaction().commit();
+		em.close();
 
-        Cron cron = context.getBean(Cron.class);
-        cron.run();
+		Cron cron = context.getBean(Cron.class);
+		cron.run();
 
-        // check that client is removed
-        em = emf.createEntityManager();
-        em.getTransaction().begin();
-        client = em.find(Client.class, "moneycash");
-        Room room = em.find(Room.class, "room");
-        assertNull(client);
-        assertEquals(room.getClients().size(), 0);
-        em.getTransaction().commit();
-        em.close();
-    }
+		// check that client is removed
+		em = emf.createEntityManager();
+		em.getTransaction().begin();
+		client = em.find(Client.class, "moneycash");
+		Room room = em.find(Room.class, "room");
+		assertNull(client);
+		assertEquals(room.getClients().size(), 0);
+		em.getTransaction().commit();
+		em.close();
+	}
 
 }

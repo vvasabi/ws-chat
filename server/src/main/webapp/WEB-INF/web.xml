@@ -23,6 +23,7 @@
 			classpath:/META-INF/spring-jpa.xml,
 			classpath:/META-INF/cron.xml,
 			classpath:/META-INF/connector.xml,
+			classpath:/META-INF/support.xml,
 			/WEB-INF/services.xml
 		</param-value>
 	</context-param>

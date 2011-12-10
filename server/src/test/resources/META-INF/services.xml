@@ -6,16 +6,6 @@
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-	<!-- Update Queues -->
-
-	<bean id="messageUpdateQueue"
-		class="ca.wasabistudio.chat.support.UpdateQueue" />
-
-	<bean id="watcherRemovalService" class="java.util.concurrent.Executors"
-		factory-method="newScheduledThreadPool" destroy-method="shutdownNow">
-		<constructor-arg value="1" />
-	</bean>
-
 	<!-- REST Services -->
 
 	<bean id="session" class="ca.wasabistudio.chat.support.Session" />
@@ -27,7 +17,7 @@
 
 	<bean id="roomService" class="ca.wasabistudio.chat.rs.RoomResource">
 		<property name="session" ref="session" />
-		<property name="messageUpdateQueue" ref="messageUpdateQueue" />
+		<property name="messageUpdateQueues" ref="messageUpdateQueues" />
 		<property name="watcherRemovalService" ref="watcherRemovalService" />
 	</bean>
 

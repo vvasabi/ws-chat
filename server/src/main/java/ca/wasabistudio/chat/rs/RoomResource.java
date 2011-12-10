@@ -3,6 +3,7 @@ package ca.wasabistudio.chat.rs;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -54,7 +55,7 @@ public class RoomResource {
 
 	private EntityManager em;
 	private Session session;
-	private UpdateQueue messageUpdateQueue;
+	private Map<String, UpdateQueue> messageUpdateQueues;
 
 	@PersistenceContext
 	public void setEntityManager(EntityManager em) {
@@ -65,8 +66,8 @@ public class RoomResource {
 		this.session = session;
 	}
 
-	public void setMessageUpdateQueue(UpdateQueue queue) {
-		messageUpdateQueue = queue;
+	public void setMessageUpdateQueues(Map<String, UpdateQueue> queues) {
+		messageUpdateQueues = queues;
 	}
 
 	public void setWatcherRemovalService(ScheduledExecutorService scheduler) {
@@ -150,11 +151,15 @@ public class RoomResource {
 
 		// mark that the client has sync'ed
 		String sessionId = request.getSession().getId();
-		syncClient(sessionId);
+		Client client = getClient(sessionId);
+		syncClient(client);
 
-		// check if there are new messages first
-		List<Message> messages = loadMessages(room, sessionId);
-		if (messages.size() > 0) {
+		// if there are results, load them directly
+		Message roomLastMessage = room.getLastMessage();
+		Message clientLastMessage = client.getRoomSetting(room).getLastMessage();
+		if ((roomLastMessage != null) && (clientLastMessage != null)
+				&& (clientLastMessage.getId() < roomLastMessage.getId())) {
+			List<Message> messages = loadMessages(room, sessionId);
 			List<MessageDTO> result = MessageDTO.toDTOs(messages);
 			response.setResponse(Response.ok(result).build());
 			return;
@@ -169,7 +174,8 @@ public class RoomResource {
 		// it's very important here to add a scheduled task that removes the
 		// watcher after timeout, so watcher does not get constantly added to
 		// the queue and cause memory leak
-		WatcherRemovalTask task = new WatcherRemovalTask(messageUpdateQueue);
+		UpdateQueue queue = findOrCreateMessageUpdateQueue(room.getKey());
+		WatcherRemovalTask task = new WatcherRemovalTask(queue);
 		final ScheduledFuture<?> future = scheduler.schedule(task,
 				LONG_POLLING_TIMEOUT, TimeUnit.MILLISECONDS);
 		UpdateWatcher watcher = new UpdateWatcher() {
@@ -197,15 +203,25 @@ public class RoomResource {
 
 		});
 
-		messageUpdateQueue.addWathcer(watcher);
+		queue.addWathcer(watcher);
+	}
+
+	private UpdateQueue findOrCreateMessageUpdateQueue(String roomKey) {
+		UpdateQueue queue = messageUpdateQueues.get(roomKey);
+		if (queue == null) {
+			queue = new UpdateQueue();
+			messageUpdateQueues.put(roomKey, queue);
+		}
+		return queue;
 	}
 
 	/**
 	 * Do so here to commit the transaction right away.
 	 */
 	@Transactional
-	private void syncClient(String sessionId) {
-		getClient(sessionId).sync();
+	private void syncClient(Client client) {
+		client.sync();
+		em.merge(client);
 	}
 
 	@Transactional
@@ -260,7 +276,7 @@ public class RoomResource {
 		storeNewMessage(roomKey, sessionId, message.getBody());
 
 		// now notify the queue
-		messageUpdateQueue.pushUpdate(null);
+		findOrCreateMessageUpdateQueue(roomKey).pushUpdate(null);
 	}
 
 	@Transactional
