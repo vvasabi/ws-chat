@@ -374,7 +374,7 @@ function createRoomTab() {
 }
 
 function notify() {
-	if (!windowFocused) {
+	if (!windowFocused && jQuery('#notification-toggle').is(':checked')) {
 		jQuery('#notification')[0].play();
 	}
 }

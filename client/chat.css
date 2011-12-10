@@ -3,54 +3,62 @@
  */
 
 body {
-    font: 1em/1em Gill Sans, Gill Sans MT, helvetica, sans-serif;
-    margin: 0;
-    padding: 0;
+	font: 1em/1em Gill Sans, Gill Sans MT, helvetica, sans-serif;
+	margin: 0;
+	padding: 0;
 }
 
 form {
-    margin: 0;
+	margin: 0;
 }
 
 #wrapper {
-    border: 15px solid #aaa;
+	border: 15px solid #aaa;
 }
 
 #wrapper h1 {
-    border-bottom: 10px solid #aaa;
-    text-align: center;
-    font-size: 1.4em;
-    font-weight: normal;
-    line-height: 1em;
-    margin: 0;
-    padding: 10px;
+	border-bottom: 10px solid #aaa;
+	text-align: center;
+	font-size: 1.4em;
+	font-weight: normal;
+	line-height: 1em;
+	margin: 0;
+	padding: 10px;
 }
 
 #wrapper #content {
-  padding: 15px;
+	padding: 15px;
 }
 
 #wrapper #content #control-box {
-    background: #bbb;
-    padding: 0 15px 15px;
+	background: #bbb;
+	padding: 0 15px 15px;
+}
+
+#wrapper #content #control-box #notification-control {
+	color: #666;
+	font-size: 0.75em;
+	text-align: right;
+	width: 80px;
+	float: right;
 }
 
 #wrapper #content #control-box #message {
-    border: none;
-    font-size: 1.2em;
-    width: 67%;
-    height: 24px;
-    padding: 5px 1%;
+	border: none;
+	font-size: 1.2em;
+	width: 67%;
+	height: 24px;
+	padding: 5px 1%;
 }
 
 #wrapper #content #control-box #send-button {
-    border: none;
-    background: #eee;
-    height: 34px;
-    margin-left: 1%;
-    padding: 10px 15px;
-    position: relative;
-    top: -2px;
+	border: none;
+	background: #eee;
+	height: 34px;
+	margin-left: 1%;
+	padding: 10px 15px;
+	position: relative;
+	top: -2px;
 }
 
 /**
@@ -58,17 +66,17 @@ form {
  */
 
 .message-regular .body {
-    color: #666;
+	color: #666;
 }
 
 .message-notice .body {
-    color: #00ccff;
-    font-size: 0.9em;
+	color: #00ccff;
+	font-size: 0.9em;
 }
 
 .message-error .body {
-  color: #ff0000;
-    font-size: 0.9em;
+color: #ff0000;
+	font-size: 0.9em;
 }
 
 /**
@@ -76,42 +84,42 @@ form {
  */
 
 .room-tab {
-    background: #bbb;
-    padding: 15px;
+	background: #bbb;
+	padding: 15px;
 }
 
 .room-tab .messages {
-    background: #fff;
-    width: 67%;
-    height: 310px;
-    padding: 5px 1%;
-    overflow-y: scroll;
-    float: left;
+	background: #fff;
+	width: 67%;
+	height: 310px;
+	padding: 5px 1%;
+	overflow-y: scroll;
+	float: left;
 }
 
 .room-tab .messages p {
-    margin: 5px 0;
+	margin: 5px 0;
 }
 
 .room-tab .participants {
-    background: #fafafa;
-    width: 27%;
-    height: 300px;
-    padding: 10px 1%;
-    float: right;
+	background: #fafafa;
+	width: 27%;
+	height: 300px;
+	padding: 10px 1%;
+	float: right;
 }
 
 .room-tab .participants h2 {
-    font-size: 1.1em;
-    font-weight: normal;
-    text-align: center;
-    margin: 0 0 1em;
+	font-size: 1.1em;
+	font-weight: normal;
+	text-align: center;
+	margin: 0 0 1em;
 }
 
 .room-tab .participants ul.list {
-    list-style: none;
-    margin: 5px 0;
-    padding: 0 0 0 10px;
+	list-style: none;
+	margin: 5px 0;
+	padding: 0 0 0 10px;
 }
 
 /**
@@ -119,24 +127,24 @@ form {
  */
 
 #room-tabs {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 
 #room-tabs li {
-    background: #eee;
-    padding: 10px 15px;
-    float: left;
+	background: #eee;
+	padding: 10px 15px;
+	float: left;
 }
 
 #room-tabs li a {
-    color: #444;
-    text-decoration: none;
+	color: #444;
+	text-decoration: none;
 }
 
 #room-tabs li.current-room {
-    background: #bbb;
+	background: #bbb;
 }
 
 /**
@@ -144,8 +152,8 @@ form {
  */
 
 .date {
-    color: #888;
-    font-size: 0.75em;
+	color: #888;
+	font-size: 0.75em;
 }
 
 /**
@@ -153,23 +161,23 @@ form {
  */
 
 .clear-block:after {
-    content: ".";
-    display: block;
-    height: 0;
-    clear: both;
-    visibility: hidden;
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
 }
 
 .clear-block {
-    display: inline-block;
+	display: inline-block;
 }
 
 /* Hides from IE-mac \*/
 * html .clear-block {
-    height: 1%;
+	height: 1%;
 }
 .clear-block {
-    display: block;
+	display: block;
 }
 /* End hide from IE-mac */
 
@@ -177,47 +185,47 @@ form {
  * IE Mask
  */
 #ie-mask {
-    background: rgba(255, 255, 255, 0.9);
+	background: rgba(255, 255, 255, 0.9);
 
-    /* For IE 5.5 - 7*/
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#eeffffff,
-        endColorstr=#eeffffff);
+	/* For IE 5.5 - 7*/
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#eeffffff,
+		endColorstr=#eeffffff);
 
-    /* For IE 8*/
-    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#eeffffff,endColorstr=#eeffffff)";
+	/* For IE 8*/
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#eeffffff,endColorstr=#eeffffff)";
 
-    width: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 100;
-    display: none;
+	width: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 100;
+	display: none;
 }
 
 #ie-mask .message-box {
-    background: url(images/ie-error.png) no-repeat;
-    font-size: 12px;
-    line-height: 14px;
-    width: 500px;
-    height: 86px;
-    padding: 35px 15px 5px 60px;
-    position: absolute;
-    top: 175px;
-    left: 18%;
-    z-index: 150px;
+	background: url(images/ie-error.png) no-repeat;
+	font-size: 12px;
+	line-height: 14px;
+	width: 500px;
+	height: 86px;
+	padding: 35px 15px 5px 60px;
+	position: absolute;
+	top: 175px;
+	left: 18%;
+	z-index: 150px;
 }
 
 #ie-mask .message-box .ok {
-    padding: 10px 0 0 189px;
+	padding: 10px 0 0 189px;
 }
 
 #ie-mask .message-box .ok a {
-    background: url(images/ie-error-button.png) no-repeat;;
-    color: black;
-    text-align: center;
-    text-decoration: none;
-    width: 75px;
-    height: 23px;
-    padding: 5px 0 0 0;
-    display: block;
+	background: url(images/ie-error-button.png) no-repeat;;
+	color: black;
+	text-align: center;
+	text-decoration: none;
+	width: 75px;
+	height: 23px;
+	padding: 5px 0 0 0;
+	display: block;
 }
