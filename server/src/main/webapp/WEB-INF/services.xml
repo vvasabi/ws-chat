@@ -12,7 +12,7 @@
 		class="ca.wasabistudio.chat.support.UpdateQueue" />
 
 	<bean id="watcherRemovalService" class="java.util.concurrent.Executors"
-		factory-method="newScheduledThreadPool">
+		factory-method="newScheduledThreadPool" destroy-method="shutdownNow">
 		<constructor-arg value="1" />
 	</bean>
 
