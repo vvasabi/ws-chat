@@ -229,23 +229,28 @@ public class RoomResource {
 	private List<Message> loadMessages(Room room, String sessionId) {
 		// acquire messages
 		List<Message> messages;
-		RoomSetting setting = getClient(sessionId).getRoomSetting(room);
+		Client client = getClient(sessionId);
+		RoomSetting setting = client.getRoomSetting(room);
 		Message lastMessage = setting.getLastMessage();
 		if (lastMessage == null) {
 			messages = em.createQuery("select m from Message m " +
 					"where m.createTime >= :time " +
 						"and m.roomKey = :roomKey " +
+						"and m.username <> :username " +
 					"order by m.id")
 				.setParameter("time", setting.getEnterTime())
 				.setParameter("roomKey", room.getKey())
+				.setParameter("username", client.getUsername())
 				.getResultList();
 		} else {
 			messages = em.createQuery("select m from Message m " +
 					"where m.id > :id " +
 						"and m.roomKey = :roomKey " +
-						"order by m.id")
+						"and m.username <> :username " +
+					"order by m.id")
 				.setParameter("id", setting.getLastMessage().getId())
 				.setParameter("roomKey", room.getKey())
+				.setParameter("username", client.getUsername())
 				.getResultList();
 		}
 

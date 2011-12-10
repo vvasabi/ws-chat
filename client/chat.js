@@ -230,7 +230,7 @@ function sendMessage(roomKey, message) {
 		type: 'POST',
 		url: appendSession(url + 'room/info/' + key + '/messages'),
 		success: function() {
-			// NOOP
+			postMessage(MessageType.REGULAR, username, message);
 		},
 		error: function(xhr, textStatus) {
 			var message = '無法送出訊息： ' + textStatus;
