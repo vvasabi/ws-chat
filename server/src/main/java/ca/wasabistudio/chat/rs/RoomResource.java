@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -51,8 +50,7 @@ public class RoomResource {
 	private static final long LONG_POLLING_TIMEOUT = 6000;
 	private static final long ASYNC_RESPONSE_TIMEOUT = 6500;
 
-	private final ScheduledExecutorService scheduler =
-			Executors.newScheduledThreadPool(1);
+	private ScheduledExecutorService scheduler;
 
 	private EntityManager em;
 	private Session session;
@@ -69,6 +67,10 @@ public class RoomResource {
 
 	public void setMessageUpdateQueue(UpdateQueue queue) {
 		messageUpdateQueue = queue;
+	}
+
+	public void setWatcherRemovalService(ScheduledExecutorService scheduler) {
+		this.scheduler = scheduler;
 	}
 
 	/**
@@ -149,6 +151,16 @@ public class RoomResource {
 		// mark that the client has sync'ed
 		String sessionId = request.getSession().getId();
 		syncClient(sessionId);
+
+		// check if there are new messages first
+		List<Message> messages = loadMessages(room, sessionId);
+		if (messages.size() > 0) {
+			List<MessageDTO> result = MessageDTO.toDTOs(messages);
+			response.setResponse(Response.ok(result).build());
+			return;
+		}
+
+		// return messages in async mode
 		returnMessages(room, sessionId, response);
 	}
 

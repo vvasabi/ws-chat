@@ -11,6 +11,11 @@
 	<bean id="messageUpdateQueue"
 		class="ca.wasabistudio.chat.support.UpdateQueue" />
 
+	<bean id="watcherRemovalService" class="java.util.concurrent.Executors"
+		factory-method="newScheduledThreadPool">
+		<constructor-arg value="1" />
+	</bean>
+
 	<!-- REST Services -->
 
 	<bean id="session" class="ca.wasabistudio.chat.support.Session"
@@ -26,6 +31,7 @@
 		scope="request">
 		<property name="session" ref="session" />
 		<property name="messageUpdateQueue" ref="messageUpdateQueue" />
+		<property name="watcherRemovalService" ref="watcherRemovalService" />
 	</bean>
 
 </beans>
