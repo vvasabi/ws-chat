@@ -235,7 +235,7 @@ public class RoomResource {
 			messages = em.createQuery("select m from Message m " +
 					"where m.createTime >= :time " +
 						"and m.roomKey = :roomKey " +
-					"order by m.createTime")
+					"order by m.id")
 				.setParameter("time", setting.getEnterTime())
 				.setParameter("roomKey", room.getKey())
 				.getResultList();
@@ -243,7 +243,7 @@ public class RoomResource {
 			messages = em.createQuery("select m from Message m " +
 					"where m.id > :id " +
 						"and m.roomKey = :roomKey " +
-						"order by m.createTime")
+						"order by m.id")
 				.setParameter("id", setting.getLastMessage().getId())
 				.setParameter("roomKey", room.getKey())
 				.getResultList();
