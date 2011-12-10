@@ -8,15 +8,13 @@
 
 	<!-- REST Services -->
 
-	<bean id="session" class="ca.wasabistudio.chat.support.Session" />
-
-	<bean id="clientService" class="ca.wasabistudio.chat.rs.ClientResource">
+	<bean id="clientService" class="ca.wasabistudio.chat.rs.ClientResource"
+		scope="prototype">
 		<property name="connector" ref="connector" />
-		<property name="session" ref="session" />
 	</bean>
 
-	<bean id="roomService" class="ca.wasabistudio.chat.rs.RoomResource">
-		<property name="session" ref="session" />
+	<bean id="roomService" class="ca.wasabistudio.chat.rs.RoomResource"
+		scope="prototype">
 		<property name="messageUpdateQueues" ref="messageUpdateQueues" />
 		<property name="watcherRemovalService" ref="watcherRemovalService" />
 	</bean>

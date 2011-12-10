@@ -25,6 +25,7 @@ public class TestRoomResource {
 	private ClassPathXmlApplicationContext context;
 	private EntityManagerFactory emf;
 	private HttpSession httpSession;
+	private RoomResource resource;
 
 	@BeforeMethod
 	public void setup() {
@@ -43,8 +44,10 @@ public class TestRoomResource {
 		client.setChatSessionId(httpSession.getId());
 		em.persist(client);
 		Room room = new Room("room");
-		Session session = context.getBean(Session.class);
+		Session session = new Session();
 		session.setClient(client);
+		resource = context.getBean(RoomResource.class);
+		resource.setSession(session);
 		em.persist(room);
 		em.getTransaction().commit();
 		em.close();
@@ -58,7 +61,6 @@ public class TestRoomResource {
 
 	@Test
 	public void testJoinRoom() {
-		RoomResource resource = context.getBean(RoomResource.class);
 		resource.joinRoom("room", new MockHttpServletRequest(httpSession));
 
 		EntityManager em = emf.createEntityManager();
@@ -75,7 +77,6 @@ public class TestRoomResource {
 	@SuppressWarnings("unchecked")
 	public void testGetMessages() {
 		// join room first
-		RoomResource resource = context.getBean(RoomResource.class);
 		resource.joinRoom("room", new MockHttpServletRequest(httpSession));
 
 		// start a request to get messages...
@@ -83,10 +84,25 @@ public class TestRoomResource {
 		MockAsyncResponse mockResponse = new MockAsyncResponse();
 		resource.getMessagesAsync("room", mockRequest, mockResponse);
 
-		// add message
+		// add message from a different client
+		EntityManager em = emf.createEntityManager();
+		MockHttpSession httpSession2 = new MockHttpSession("testSession2");
+		em.getTransaction().begin();
+		Client client = new Client("test");
+		client.setChatSessionId(httpSession2.getId());
+		em.persist(client);
+		em.getTransaction().commit();
+		em.close();
+
+		Session session2 = new Session();
+		session2.setClient(client);
+		RoomResource resource2 = context.getBean(RoomResource.class);
+		resource2.setSession(session2);
+		HttpServletRequest request2 = new MockHttpServletRequest(httpSession2);
+		resource2.joinRoom("room", request2);
 		MessageDTO message = new MessageDTO();
 		message.setBody("test message");
-		resource.addMessage("room", message, mockRequest);
+		resource2.addMessage("room", message, request2);
 
 		// validate result now
 		try {
