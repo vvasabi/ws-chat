@@ -180,12 +180,25 @@ public class RoomResource {
 				LONG_POLLING_TIMEOUT, TimeUnit.MILLISECONDS);
 		UpdateWatcher watcher = new UpdateWatcher() {
 
+			private boolean finished;
+
 			@Override
 			public void pushUpdate(Object data) {
+				// return result only
+				finished = false;
 				List<Message> messages = loadMessages(room, sessionId);
-				List<MessageDTO> result = MessageDTO.toDTOs(messages);
-				response.setResponse(Response.ok(result).build());
-				future.cancel(true);
+				if (messages.size() > 0) {
+					List<MessageDTO> result = MessageDTO.toDTOs(messages);
+					response.setResponse(Response.ok(result).build());
+					future.cancel(true);
+					finished = true;
+					return;
+				}
+			}
+
+			@Override
+			public boolean isFinished() {
+				return finished;
 			}
 
 		};

@@ -4,4 +4,6 @@ public interface UpdateWatcher {
 
 	void pushUpdate(Object data);
 
+	boolean isFinished();
+
 }

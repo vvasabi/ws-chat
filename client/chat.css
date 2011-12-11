@@ -3,7 +3,8 @@
  */
 
 body {
-	font: 1em/1em Gill Sans, Gill Sans MT, helvetica, sans-serif;
+	background: #aaa;
+	font: 1em/1.25em Gill Sans, Gill Sans MT, helvetica, sans-serif;
 	margin: 0;
 	padding: 0;
 }
@@ -13,6 +14,7 @@ form {
 }
 
 #wrapper {
+	background: white;
 	border: 15px solid #aaa;
 }
 
@@ -21,7 +23,7 @@ form {
 	text-align: center;
 	font-size: 1.4em;
 	font-weight: normal;
-	line-height: 1em;
+	line-height: 1.25em;
 	margin: 0;
 	padding: 10px;
 }
@@ -46,16 +48,16 @@ form {
 #wrapper #content #control-box #message {
 	border: none;
 	font-size: 1.2em;
-	width: 67%;
 	height: 24px;
-	padding: 5px 1%;
+	margin-right: 12px;
+	padding: 5px;
 }
 
 #wrapper #content #control-box #send-button {
 	border: none;
 	background: #eee;
 	height: 34px;
-	margin-left: 1%;
+	margin: 0;
 	padding: 10px 15px;
 	position: relative;
 	top: -2px;
@@ -90,9 +92,7 @@ color: #ff0000;
 
 .room-tab .messages {
 	background: #fff;
-	width: 67%;
-	height: 310px;
-	padding: 5px 1%;
+	padding: 5px 10px;
 	overflow-y: scroll;
 	float: left;
 }
@@ -103,9 +103,8 @@ color: #ff0000;
 
 .room-tab .participants {
 	background: #fafafa;
-	width: 27%;
-	height: 300px;
-	padding: 10px 1%;
+	width: 200px;
+	padding: 10px;
 	float: right;
 }
 

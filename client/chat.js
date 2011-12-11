@@ -32,6 +32,7 @@ jQuery(window).blur(function() {
 jQuery(function() {
 	// no support for msie
 	if (msie()) {
+		jQuery('#wrapper').hide();
 		jQuery('#ie-mask').css('display', 'block');
 		jQuery('#ie-mask').css('height', jQuery(document).height() + 'px');
 		return;
@@ -42,7 +43,7 @@ jQuery(function() {
 		url: 'config.json',
 		success: function(data) {
 			url = data.url;
-			var message = '正在登入聊天室: ' + url;
+			var message = '正在登入聊天室... ';
 			postMessage(MessageType.NOTICE, null, message);
 			getSessionId();
 		},
@@ -83,6 +84,12 @@ jQuery(function() {
 	var roomTab = createRoomTab();
 	currentTab = roomTab.attr('id', 'room-tab-1');
 	roomTabContent.append(roomTab);
+
+	// set up window size
+	setUpWindow();
+	jQuery(window).resize(function() {
+		setUpWindow();
+	});
 
 	// @TODO: clean up madao's code
 /*
@@ -135,6 +142,26 @@ jQuery(function() {
 function msie() {
 	var name = 'Internet Explorer';
 	return navigator.appName.indexOf(name) != -1;
+}
+
+var elementsHeight = 0;
+function setUpWindow() {
+	// set the width
+	var roomTabWidth = jQuery('.room-tab').first().width();
+	var spacing = 220 + 15; // clinet list + right margin
+	jQuery('.messages').width(roomTabWidth - spacing - 20); // 20 is padding
+	jQuery('#message').width(roomTabWidth - spacing - 10); // 10 is padding
+
+	// set the height
+	if (!elementsHeight) {
+		var wrapperHeight = jQuery('#wrapper').height();
+		var messageBoxHeight = jQuery('.messages').first().height();
+		elementsHeight = wrapperHeight - messageBoxHeight;
+	}
+	var windowHeight = jQuery(window).height();
+	var height = windowHeight - elementsHeight + 43;
+	jQuery('.messages').height(height - 30); // minus padding
+	jQuery('.participants').height(height - 40); // minus padding
 }
 
 function getSessionId() {
@@ -337,7 +364,6 @@ function updateMessages() {
 		url: appendSession(url + 'room/info/' + key + '/messages'),
 		success: function(data) {
 			failCount = 0;
-			pollingMessages = false;
 			if (!data.length) {
 				return;
 			}
@@ -345,6 +371,10 @@ function updateMessages() {
 				postMessage(MessageType.REGULAR, data[i].client, data[i].body);
 			}
 			notify();
+
+			// start over right away
+			pollingMessages = false;
+			updateMessages();
 		},
 		error: function() {
 			pollingMessages = false;

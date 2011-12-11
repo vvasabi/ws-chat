@@ -19,9 +19,14 @@ public class UpdateQueue {
 
 	public synchronized void pushUpdate(Object data) {
 		UpdateWatcher watcher = null;
+		Queue<UpdateWatcher> notFinished = new LinkedList<UpdateWatcher>();
 		while ((watcher = watchers.poll()) != null) {
 			watcher.pushUpdate(data);
+			if (!watcher.isFinished()) {
+				notFinished.add(watcher);
+			}
 		}
+		watchers.addAll(notFinished);
 	}
 
 	public synchronized void addWathcer(UpdateWatcher watcher) {
