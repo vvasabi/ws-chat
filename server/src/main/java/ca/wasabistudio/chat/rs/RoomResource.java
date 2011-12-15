@@ -159,6 +159,8 @@ public class RoomResource {
 		Message clientLastMessage = client.getRoomSetting(room).getLastMessage();
 		if ((roomLastMessage != null) && (clientLastMessage != null)
 				&& (clientLastMessage.getId() < roomLastMessage.getId())) {
+			// no checking for the result size because checking of the last
+			// message's id indicates the outcome already
 			List<Message> messages = loadMessages(room, sessionId);
 			List<MessageDTO> result = MessageDTO.toDTOs(messages);
 			response.setResponse(Response.ok(result).build());
