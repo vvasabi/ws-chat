@@ -1,35 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:tx="http://www.springframework.org/schema/tx"
-    xsi:schemaLocation="http://www.springframework.org/schema/osgi
-        http://www.springframework.org/schema/osgi/spring-osgi-1.2.xsd
-        http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-        http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context-3.0.xsd
-        http://www.springframework.org/schema/tx
-        http://www.springframework.org/schema/tx/spring-tx.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/osgi
+		http://www.springframework.org/schema/osgi/spring-osgi-1.2.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <!-- Spring JPA Support -->
+	<!-- Spring JPA Support -->
 
-    <bean id="entityManagerFactory"
-        class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
-        <property name="persistenceUnitName" value="chat" />
-    </bean>
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="chat" />
+	</bean>
 
-    <bean id="transactionManager"
-        class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory" />
-    </bean>
+	<bean id="transactionManager"
+		class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
 
-    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
-    <context:load-time-weaver aspectj-weaving="on" />
+	<context:annotation-config />
 
-    <context:annotation-config />
-
-    <tx:annotation-driven mode="aspectj" />
+	<tx:annotation-driven mode="aspectj" />
 
 </beans>

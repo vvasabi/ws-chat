@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Chat Window Launcher</title>
+		<script src="jquery-1.7.1.min.js" type="text/javascript"></script>
+		<script type="text/javascript">
+		jQuery(function() {
+			jQuery('#trigger').click(function() {
+				window.open('index.html', null, 'scrollbars=no,resizable=no,width=800,height=550');
+				return false;
+			});
+		});
+		</script>
+	</head>
+	<body>
+		<p>
+			<a id="trigger" href="#">Launch</a>
+		</p>
+	</body>
+</html>
