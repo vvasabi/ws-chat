@@ -29,7 +29,7 @@ jQuery(window).blur(function() {
 	windowFocused = false;
 });
 
-jQuery(function() {
+jQuery(window).load(function() {
 	// no support for msie
 	if (msie()) {
 		jQuery('#wrapper').hide();
@@ -364,13 +364,12 @@ function updateMessages() {
 		url: appendSession(url + 'room/info/' + key + '/messages'),
 		success: function(data) {
 			failCount = 0;
-			if (!data.length) {
-				return;
+			if (data.length) {
+				for (var i in data) {
+					postMessage(MessageType.REGULAR, data[i].client, data[i].body);
+				}
+				notify();
 			}
-			for (var i in data) {
-				postMessage(MessageType.REGULAR, data[i].client, data[i].body);
-			}
-			notify();
 
 			// start over right away
 			pollingMessages = false;
