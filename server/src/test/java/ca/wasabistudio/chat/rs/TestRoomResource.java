@@ -15,8 +15,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import ca.wasabistudio.chat.dto.MessageDTO;
 import ca.wasabistudio.chat.entity.Client;
+import ca.wasabistudio.chat.entity.Message;
 import ca.wasabistudio.chat.entity.Room;
 import ca.wasabistudio.chat.support.Session;
 
@@ -90,6 +90,7 @@ public class TestRoomResource {
 		em.getTransaction().begin();
 		Client client = new Client("test");
 		client.setChatSessionId(httpSession2.getId());
+		Room room = em.find(Room.class, "room");
 		em.persist(client);
 		em.getTransaction().commit();
 		em.close();
@@ -100,8 +101,7 @@ public class TestRoomResource {
 		resource2.setSession(session2);
 		HttpServletRequest request2 = new MockHttpServletRequest(httpSession2);
 		resource2.joinRoom("room", request2);
-		MessageDTO message = new MessageDTO();
-		message.setBody("test message");
+		Message message = new Message(client, room, "test message");
 		resource2.addMessage("room", message, request2);
 
 		// validate result now
@@ -109,7 +109,7 @@ public class TestRoomResource {
 			Thread.sleep(500);
 			assertTrue(mockResponse.isResponseSet());
 			Response response = mockResponse.getResponse();
-			List<MessageDTO> messages = (List<MessageDTO>)response.getEntity();
+			List<Message> messages = (List<Message>)response.getEntity();
 			assertEquals(messages.size(), 1);
 		} catch (InterruptedException exception) {
 			throw new RuntimeException(exception);

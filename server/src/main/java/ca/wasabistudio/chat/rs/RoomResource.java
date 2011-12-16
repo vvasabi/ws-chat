@@ -9,8 +9,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
@@ -23,15 +21,16 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.Suspend;
 import org.jboss.resteasy.spi.AsynchronousResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import ca.wasabistudio.chat.dto.ClientDTO;
-import ca.wasabistudio.chat.dto.MessageDTO;
-import ca.wasabistudio.chat.dto.RoomDTO;
 import ca.wasabistudio.chat.entity.Client;
 import ca.wasabistudio.chat.entity.Message;
 import ca.wasabistudio.chat.entity.Room;
 import ca.wasabistudio.chat.entity.RoomSetting;
+import ca.wasabistudio.chat.repo.ClientRepository;
+import ca.wasabistudio.chat.repo.MessageRepository;
+import ca.wasabistudio.chat.repo.RoomRepository;
 import ca.wasabistudio.chat.support.NotFoundException;
 import ca.wasabistudio.chat.support.RequestErrorException;
 import ca.wasabistudio.chat.support.Session;
@@ -51,16 +50,19 @@ public class RoomResource {
 	private static final long LONG_POLLING_TIMEOUT = 6000;
 	private static final long ASYNC_RESPONSE_TIMEOUT = 6500;
 
+	@Autowired
+	private RoomRepository roomRepo;
+
+	@Autowired
+	private ClientRepository clientRepo;
+
+	@Autowired
+	private MessageRepository messageRepo;
+
 	private ScheduledExecutorService scheduler;
 
-	private EntityManager em;
 	private Session session;
 	private Map<String, UpdateQueue> messageUpdateQueues;
-
-	@PersistenceContext
-	public void setEntityManager(EntityManager em) {
-		this.em = em;
-	}
 
 	public void setSession(Session session) {
 		this.session = session;
@@ -90,7 +92,7 @@ public class RoomResource {
 		Room room = getRoom(roomKey);
 		if (room == null) {
 			room = new Room(roomKey);
-			em.persist(room);
+			roomRepo.save(room);
 		}
 		room.addClient(client);
 	}
@@ -103,12 +105,9 @@ public class RoomResource {
 	@GET
 	@Path("/list")
 	@Produces("application/json")
-	@Transactional
-	@SuppressWarnings("unchecked")
-	public List<RoomDTO> getRooms() {
-		List<Room> rooms = em.createQuery("select r from Room r")
-			.getResultList();
-		return RoomDTO.toDTOs(rooms);
+	@Transactional(readOnly=true)
+	public List<Room> getRooms() {
+		return roomRepo.findAll();
 	}
 
 	/**
@@ -121,15 +120,14 @@ public class RoomResource {
 	@Path("/info/{room}/clients")
 	@Produces("application/json")
 	@Transactional
-	public Collection<ClientDTO> getClients(@PathParam("room") String roomKey) {
+	public Collection<Client> getClients(@PathParam("room") String roomKey) {
 		Room room = getRoom(roomKey);
 		if (room == null) {
 			String message = "Room cannot be found.";
 			throw new NotFoundException(message);
 		}
 
-		List<Client> clients = room.getClients();
-		return ClientDTO.toDTOs(clients);
+		return room.getClients();
 	}
 
 	/**
@@ -162,8 +160,7 @@ public class RoomResource {
 			// no checking for the result size because checking of the last
 			// message's id indicates the outcome already
 			List<Message> messages = loadMessages(room, sessionId);
-			List<MessageDTO> result = MessageDTO.toDTOs(messages);
-			response.setResponse(Response.ok(result).build());
+			response.setResponse(Response.ok(messages).build());
 			return;
 		}
 
@@ -190,8 +187,7 @@ public class RoomResource {
 				finished = false;
 				List<Message> messages = loadMessages(room, sessionId);
 				if (messages.size() > 0) {
-					List<MessageDTO> result = MessageDTO.toDTOs(messages);
-					response.setResponse(Response.ok(result).build());
+					response.setResponse(Response.ok(messages).build());
 					future.cancel(true);
 					finished = true;
 					return;
@@ -211,7 +207,7 @@ public class RoomResource {
 
 			@Override
 			public Boolean call() throws Exception {
-				List<MessageDTO> result = new ArrayList<MessageDTO>();
+				List<Message> result = new ArrayList<Message>();
 				response.setResponse(Response.ok(result).build());
 				return true;
 			}
@@ -236,11 +232,10 @@ public class RoomResource {
 	@Transactional
 	private void syncClient(Client client) {
 		client.sync();
-		em.merge(client);
+		clientRepo.save(client);
 	}
 
 	@Transactional
-	@SuppressWarnings("unchecked")
 	private List<Message> loadMessages(Room room, String sessionId) {
 		// acquire messages
 		List<Message> messages;
@@ -248,25 +243,13 @@ public class RoomResource {
 		RoomSetting setting = client.getRoomSetting(room);
 		Message lastMessage = setting.getLastMessage();
 		if (lastMessage == null) {
-			messages = em.createQuery("select m from Message m " +
-					"where m.createTime >= :time " +
-						"and m.roomKey = :roomKey " +
-						"and m.username <> :username " +
-					"order by m.id")
-				.setParameter("time", setting.getEnterTime())
-				.setParameter("roomKey", room.getKey())
-				.setParameter("username", client.getUsername())
-				.getResultList();
+			messages = messageRepo.findMessagesByTime(setting.getEnterTime(),
+					room.getKey(), client.getUsername());
 		} else {
-			messages = em.createQuery("select m from Message m " +
-					"where m.id > :id " +
-						"and m.roomKey = :roomKey " +
-						"and m.username <> :username " +
-					"order by m.id")
-				.setParameter("id", setting.getLastMessage().getId())
-				.setParameter("roomKey", room.getKey())
-				.setParameter("username", client.getUsername())
-				.getResultList();
+			int lastMessageId = setting.getLastMessage().getId();
+			messages = messageRepo.findMessagesByLastMessage(lastMessageId,
+					room.getKey(),
+					client.getUsername());
 		}
 
 		// update last message sync'ed
@@ -287,7 +270,7 @@ public class RoomResource {
 	@POST
 	@Path("/info/{room}/messages")
 	public void addMessage(@PathParam("room") String roomKey,
-			MessageDTO message, @Context HttpServletRequest request) {
+			Message message, @Context HttpServletRequest request) {
 		if ("".equals(message.getBody())) {
 			throw new RequestErrorException("Message body cannot be empty.");
 		}
@@ -315,7 +298,7 @@ public class RoomResource {
 	private Client getClient(String chatSessionId) {
 		try {
 			String username = session.getClient().getUsername();
-			Client client = em.find(Client.class, username);
+			Client client = clientRepo.findOne(username);
 			if ((client == null)
 					|| !chatSessionId.equals(client.getChatSessionId())) {
 				throw new SessionExpiredException();
@@ -333,7 +316,7 @@ public class RoomResource {
 			String message = "Room cannot be empty.";
 			throw new RequestErrorException(message);
 		}
-		return (Room)em.find(Room.class, roomKey);
+		return roomRepo.findOne(roomKey);
 	}
 
 }

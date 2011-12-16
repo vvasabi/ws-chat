@@ -21,136 +21,145 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 @Entity
 @Table(name="rooms")
+@JsonAutoDetect(fieldVisibility=JsonAutoDetect.Visibility.NONE,
+	getterVisibility=JsonAutoDetect.Visibility.NONE)
 public class Room implements Serializable {
 
-    private static final long serialVersionUID = 3056095542238612660L;
+	private static final long serialVersionUID = 3056095542238612660L;
 
-    @Id
-    @Column(name="room_key", length=25)
-    @Access(AccessType.FIELD)
-    private String key;
+	@Id
+	@Column(name="room_key", length=25)
+	@Access(AccessType.FIELD)
+	@JsonProperty
+	private String key;
 
-    @Column(name="title", length=50)
-    private String title;
+	@Column(name="title", length=50)
+	@JsonProperty
+	private String title;
 
-    @Column(name="motd", length=200)
-    private String motd;
+	@Column(name="motd", length=200)
+	@JsonProperty
+	private String motd;
 
-    @Column(name="create_time")
-    @Temporal(TemporalType.TIMESTAMP)
-    @Access(AccessType.FIELD)
-    private Date createTime;
+	@Column(name="create_time")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Access(AccessType.FIELD)
+	@JsonProperty
+	private Date createTime;
 
-    @OneToMany(cascade=CascadeType.ALL)
-    @JoinColumn(name="room_key")
-    @Access(AccessType.FIELD)
-    private List<Message> messages;
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumn(name="room_key")
+	@Access(AccessType.FIELD)
+	private List<Message> messages;
 
-    @ManyToMany
-    @JoinTable(name="rooms_clients",
-        joinColumns=@JoinColumn(name="room_key"),
-        inverseJoinColumns=@JoinColumn(name="username"))
-    @Access(AccessType.FIELD)
-    @OrderBy("username")
-    private List<Client> clients;
+	@ManyToMany
+	@JoinTable(name="rooms_clients",
+		joinColumns=@JoinColumn(name="room_key"),
+		inverseJoinColumns=@JoinColumn(name="username"))
+	@Access(AccessType.FIELD)
+	@OrderBy("username")
+	private List<Client> clients;
 
-    @JoinColumn(name="last_message")
-    private Message lastMessage;
+	@JoinColumn(name="last_message")
+	private Message lastMessage;
 
-    Room() {
-        this.key = "";
-        this.title = "";
-        this.motd = "";
-        this.createTime = new Date();
-        this.messages = new ArrayList<Message>();
-        this.clients = new ArrayList<Client>();
-    }
+	Room() {
+		this.key = "";
+		this.title = "";
+		this.motd = "";
+		this.createTime = new Date();
+		this.messages = new ArrayList<Message>();
+		this.clients = new ArrayList<Client>();
+	}
 
-    public Room(String key) {
-        this();
-        this.key = key;
-    }
+	public Room(String key) {
+		this();
+		this.key = key;
+	}
 
-    public String getKey() {
-        return key;
-    }
+	public String getKey() {
+		return key;
+	}
 
-    public String getTitle() {
-        return title;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    public String getMotd() {
-        return motd;
-    }
+	public String getMotd() {
+		return motd;
+	}
 
-    public void setMotd(String motd) {
-        this.motd = motd;
-    }
+	public void setMotd(String motd) {
+		this.motd = motd;
+	}
 
-    public Date getCreateTime() {
-        return (Date)createTime.clone();
-    }
+	public Date getCreateTime() {
+		return (Date)createTime.clone();
+	}
 
-    public List<Message> getMessages() {
-        return messages;
-    }
+	public List<Message> getMessages() {
+		return messages;
+	}
 
-    public void addMessage(Message message) {
-        messages.add(message);
-    }
+	public void addMessage(Message message) {
+		messages.add(message);
+	}
 
-    public void removeMessage(Message message) {
-        messages.remove(message);
-    }
+	public void removeMessage(Message message) {
+		messages.remove(message);
+	}
 
-    public List<Client> getClients() {
-        return Collections.unmodifiableList(clients);
-    }
+	public List<Client> getClients() {
+		return Collections.unmodifiableList(clients);
+	}
 
-    public void addClient(Client client) {
-        RoomSetting setting = new RoomSetting(client, this);
-        setting.setLastMessage(getLastMessage());
-        client.addRoomSetting(setting);
-        clients.add(client);
-    }
+	public void addClient(Client client) {
+		RoomSetting setting = new RoomSetting(client, this);
+		setting.setLastMessage(getLastMessage());
+		client.addRoomSetting(setting);
+		clients.add(client);
+	}
 
-    public void removeClient(Client client) {
-        if (!clients.contains(client)) {
-            return;
-        }
-        client.removeRoomSetting(this);
-        clients.remove(client);
-    }
+	public void removeClient(Client client) {
+		if (!clients.contains(client)) {
+			return;
+		}
+		client.removeRoomSetting(this);
+		clients.remove(client);
+	}
 
-    public Message getLastMessage() {
-        return lastMessage;
-    }
+	public Message getLastMessage() {
+		return lastMessage;
+	}
 
-    public void setLastMessage(Message message) {
-        lastMessage = message;
-    }
+	public void setLastMessage(Message message) {
+		lastMessage = message;
+	}
 
-    @Override
-    public int hashCode() {
-        return this.getKey().hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return this.getKey().hashCode();
+	}
 
-    @Override
-    public boolean equals(Object other) {
-        if (other instanceof Room) {
-            Room otherRoom = (Room)other;
-            if ("".equals(getKey()) || "".equals(otherRoom.getKey())) {
-                return super.equals(other);
-            }
-            return getKey().equals(otherRoom.getKey());
-        }
-        return false;
-    }
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof Room) {
+			Room otherRoom = (Room)other;
+			if ("".equals(getKey()) || "".equals(otherRoom.getKey())) {
+				return super.equals(other);
+			}
+			return getKey().equals(otherRoom.getKey());
+		}
+		return false;
+	}
 
 }

@@ -2,8 +2,6 @@ package ca.wasabistudio.chat.rs;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -13,12 +11,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ca.wasabistudio.chat.connector.Connector;
-import ca.wasabistudio.chat.dto.ClientDTO;
 import ca.wasabistudio.chat.entity.Client;
+import ca.wasabistudio.chat.repo.ClientRepository;
 import ca.wasabistudio.chat.support.RequestErrorException;
 import ca.wasabistudio.chat.support.Session;
 import ca.wasabistudio.chat.support.SessionException;
@@ -31,14 +30,11 @@ import ca.wasabistudio.chat.support.SessionException;
 @Path("/client")
 public class ClientResource {
 
-	private EntityManager em;
+	@Autowired
+	private ClientRepository clientRepo;
+
 	private Connector connector;
 	private Session session;
-
-	@PersistenceContext
-	public void setEntityManager(EntityManager em) {
-		this.em = em;
-	}
 
 	public void setConnector(Connector connector) {
 		this.connector = connector;
@@ -98,17 +94,17 @@ public class ClientResource {
 		client.setSessionId(production ? sessionId : null);
 		client.setChatSessionId(request.getSession().getId());
 		client.sync();
-		em.persist(client);
+		clientRepo.save(client);
 		session.setClient(client);
 		return username;
 	}
 
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	private void removeClient(String username) {
-		Client client = em.find(Client.class, username);
+		Client client = clientRepo.findOne(username);;
 		if (client != null) {
 			client.exitAllRooms();
-			em.remove(client);
+			clientRepo.delete(client);
 		}
 	}
 
@@ -120,11 +116,8 @@ public class ClientResource {
 	@GET
 	@Path("/list")
 	@Produces("application/json")
-	@SuppressWarnings("unchecked")
-	public List<ClientDTO> getClients() {
-		List<Client> clients = (List<Client>)em.createQuery("select c from Client c")
-				.getResultList();
-		return ClientDTO.toDTOs(clients);
+	public List<Client> getClients() {
+		return clientRepo.findAll();
 	}
 
 	private String getIp(HttpServletRequest request) {

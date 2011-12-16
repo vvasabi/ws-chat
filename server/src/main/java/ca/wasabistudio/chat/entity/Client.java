@@ -17,8 +17,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 @Entity
 @Table(name="clients")
+@JsonAutoDetect(fieldVisibility=JsonAutoDetect.Visibility.NONE,
+	getterVisibility=JsonAutoDetect.Visibility.NONE)
 public class Client implements Serializable {
 
 	private static final long serialVersionUID = 7958127884926450063L;
@@ -26,9 +31,11 @@ public class Client implements Serializable {
 	@Id
 	@Column(name="username", length=100)
 	@Access(AccessType.FIELD)
+	@JsonProperty
 	private String username;
 
 	@Column(name="status", length=10)
+	@JsonProperty
 	private String status;
 
 	@Column(name="session_id", length=32)
@@ -40,6 +47,7 @@ public class Client implements Serializable {
 	@Column(name="last_sync")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Access(AccessType.FIELD)
+	@JsonProperty
 	private Date lastSync;
 
 	@OneToMany(cascade=CascadeType.PERSIST)
