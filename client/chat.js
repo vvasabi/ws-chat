@@ -9,7 +9,6 @@ var username = '';
 var url = '';
 var longPollTimeout = 75000; // 75 seconds
 var pollInterval = 250; // short because we use long poll
-var participantPollInterval = 5000; // 5 seconds
 var pollingMessages = false;
 var currentRoom = '';
 var username = '';
@@ -19,7 +18,6 @@ var windowFocused = true;
 var failCount = 0;
 var failThreshold = 5;
 var syncMessageInterval;
-var syncClientsInterval;
 
 // message types
 var MessageType = {
@@ -247,7 +245,6 @@ function userInit() {
 			currentRoom = roomKey;
 			jQuery('#send-message-form input').removeAttr('disabled');
 
-			syncClientsInterval = setInterval(updateListOfClients, participantPollInterval);
 			syncMessageInterval = setInterval(updateMessages, pollInterval);
 			updateListOfClients();
 		});
@@ -410,11 +407,13 @@ function updateMessages() {
 					switch (data[i].type) {
 						case 'Entrance':
 							handleEntranceMessage(data[i]);
+							updateListOfClients();
 							entranceNotify = true;
 						break;
 
 						case 'Exit':
 							handleExitMessage(data[i]);
+							updateListOfClients();
 						break;
 
 						case 'Regular':
@@ -497,6 +496,5 @@ function checkFailCount() {
 		postMessage(MessageType.ERROR, null, message);
 
 		clearInterval(syncMessageInterval);
-		clearInterval(syncClientsInterval);
 	}
 }
