@@ -24,4 +24,7 @@
 		<property name="watcherRemovalService" ref="watcherRemovalService" />
 	</bean>
 
+	<bean id="infoService" class="ca.wasabistudio.chat.rs.InfoResource"
+		scope="request" />
+
 </beans>

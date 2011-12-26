@@ -65,7 +65,7 @@
 		<init-param>
 			<param-name>beans</param-name>
 			<param-value>
-				clientService, roomService
+				clientService, roomService, infoService
 			</param-value>
 		</init-param>
 		<init-param>
@@ -91,6 +91,11 @@
 	<servlet-mapping>
 		<servlet-name>RestServlet</servlet-name>
 		<url-pattern>/room/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>RestServlet</servlet-name>
+		<url-pattern>/info/*</url-pattern>
 	</servlet-mapping>
 </web-app>
 

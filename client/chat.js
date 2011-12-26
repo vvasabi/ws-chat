@@ -1,3 +1,10 @@
+/**
+ * Chat UI script.
+ *
+ * @author wasabi
+ */
+
+var API_VERSION = 1;
 var username = '';
 var url = '';
 var longPollTimeout = 75000; // 75 seconds
@@ -38,14 +45,25 @@ jQuery(window).load(function() {
 		return;
 	}
 
-	// load config
+	// check API version
 	jQuery.ajax({
 		url: 'config.json',
 		success: function(data) {
 			url = data.url;
-			var message = '正在登入聊天室... ';
-			postMessage(MessageType.NOTICE, null, message);
-			getSessionId();
+			checkAPIVersion(function(version) {
+				if (version > API_VERSION) {
+					var message = '已發現新版本，請重新整理頁面。';
+					postMessage(MessageType.ERROR, null, message);
+					return;
+				}
+
+				var message = '正在登入聊天室... ';
+				postMessage(MessageType.NOTICE, null, message);
+				getSessionId();
+			}, function() {
+				var message = '無法連上伺服器，請稍後再試。';
+				postMessage(MessageType.ERROR, null, message);
+			});
 		},
 		error: function(xhr) {
 			var message = '無法讀取聊天室設定資料: ' + xhr.status;
@@ -54,42 +72,45 @@ jQuery(window).load(function() {
 		dataType: 'json'
 	});
 
-	jQuery('#send-message-form').submit(function() {
-		var message = jQuery('#message').val();
-		if (!message.trim()) {
-			postMessage(MessageType.ERROR, null, '請輸入要送出的訊息。');
+	// set up UI
+	(function() {
+		jQuery('#send-message-form').submit(function() {
+			var message = jQuery('#message').val();
+			if (!message.trim()) {
+				postMessage(MessageType.ERROR, null, '請輸入要送出的訊息。');
+				return false;
+			}
+			jQuery('#message').val('');
+			sendMessage(currentRoom, message);
 			return false;
-		}
-		jQuery('#message').val('');
-		sendMessage(currentRoom, message);
-		return false;
-	});
+		});
 
-	// Madao no room tabs
-	var tabs = jQuery('#room-tabs');
-	var tab = jQuery('<li />');
-	tab.addClass('current-room');
+		// Madao no room tabs
+		var tabs = jQuery('#room-tabs');
+		var tab = jQuery('<li />');
+		tab.addClass('current-room');
 
-	var link = jQuery('<a href="#" />');
-	link.attr('id', 'room-tab-link-1');
-	link.text('大廳');
-	link.click(function() {
-		return false;
-	});
-	tab.append(link);
-	tabs.append(tab);
+		var link = jQuery('<a href="#" />');
+		link.attr('id', 'room-tab-link-1');
+		link.text('大廳');
+		link.click(function() {
+			return false;
+		});
+		tab.append(link);
+		tabs.append(tab);
 
-	// actual room tab content
-	var roomTabContent = jQuery('#room-tab-content');
-	var roomTab = createRoomTab();
-	currentTab = roomTab.attr('id', 'room-tab-1');
-	roomTabContent.append(roomTab);
+		// actual room tab content
+		var roomTabContent = jQuery('#room-tab-content');
+		var roomTab = createRoomTab();
+		currentTab = roomTab.attr('id', 'room-tab-1');
+		roomTabContent.append(roomTab);
 
-	// set up window size
-	setUpWindow();
-	jQuery(window).resize(function() {
+		// set up window size
 		setUpWindow();
-	});
+		jQuery(window).resize(function() {
+			setUpWindow();
+		});
+	})();
 
 	// @TODO: clean up madao's code
 /*
@@ -136,12 +157,20 @@ jQuery(window).load(function() {
 			}
 		});
 	});*/
-
 });
 
 function msie() {
 	var name = 'Internet Explorer';
 	return navigator.appName.indexOf(name) != -1;
+}
+
+function checkAPIVersion(success, error) {
+	jQuery.ajax({
+		url: url + 'info/api',
+		success: success,
+		error: error,
+		dataType: 'text'
+	});
 }
 
 var elementsHeight = 0;
