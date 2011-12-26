@@ -282,6 +282,19 @@ public class RoomResource {
 		findOrCreateMessageUpdateQueue(roomKey).pushUpdate(null);
 	}
 
+	@POST
+	@Path("exit/{room}")
+	@Transactional
+	public void exit(@PathParam("room") String roomKey,
+			@Context HttpServletRequest request) {
+		System.out.println("QUIT!");
+		String sessionId = request.getSession().getId();
+		Client client = getClient(sessionId);
+
+		Room room = roomRepo.findOne(roomKey);
+		client.exitRoom(room);
+	}
+
 	@Transactional
 	private void storeNewMessage(String roomKey, String sessionId,
 			String messageBody) {

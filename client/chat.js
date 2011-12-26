@@ -112,6 +112,20 @@ jQuery(window).load(function() {
 		});
 	})();
 
+	// room exit event
+	jQuery(window).bind('beforeunload', function() {
+		if (!currentRoom) {
+			return;
+		}
+
+		var key = encodeURIComponent(currentRoom);
+		jQuery.ajax({
+			type: 'POST',
+			url: appendSession(url + 'room/exit/' + key),
+			async: false
+		});
+	});
+
 	// @TODO: clean up madao's code
 /*
 	jQuery(function() {
@@ -194,19 +208,19 @@ function setUpWindow() {
 }
 
 function getSessionId() {
-jQuery.ajax({
-	type: 'POST',
-	url: 'sid',
-	success: function(data) {
-	sid = data;
-	setupServerSession();
-	},
-	error: function(xhr) {
-		var message = '無法登入聊天室，請確定您已登入論壇。';
-		postMessage(MessageType.ERROR, null, message);
-	},
-	dataType: 'text'
-});
+	jQuery.ajax({
+		type: 'POST',
+		url: 'sid',
+		success: function(data) {
+		sid = data;
+		setupServerSession();
+		},
+		error: function(xhr) {
+			var message = '無法登入聊天室，請確定您已登入論壇。';
+			postMessage(MessageType.ERROR, null, message);
+		},
+		dataType: 'text'
+	});
 }
 
 function setupServerSession() {

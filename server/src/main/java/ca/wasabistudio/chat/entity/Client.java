@@ -119,6 +119,15 @@ public class Client implements Serializable {
 		messages.remove(message);
 	}
 
+	public void exitRoom(Room room) {
+		for (RoomSetting roomSetting : roomSettings) {
+			if (roomSetting.getRoom().equals(room)) {
+				roomSettings.remove(roomSetting);
+				room.removeClient(this);
+			}
+		}
+	}
+
 	/**
 	 * Exit all the rooms currently logged on.
 	 */
