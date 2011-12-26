@@ -190,7 +190,7 @@ public class RoomResource {
 		// it's very important here to add a scheduled task that removes the
 		// watcher after timeout, so watcher does not get constantly added to
 		// the queue and cause memory leak
-		final UpdateQueue queue = findOrCreateMessageUpdateQueue(room.getKey());
+		UpdateQueue queue = findOrCreateMessageUpdateQueue(room.getKey());
 		WatcherRemovalTask task = new WatcherRemovalTask(queue);
 		final ScheduledFuture<?> future = scheduler.schedule(task,
 				LONG_POLLING_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -214,7 +214,6 @@ public class RoomResource {
 			@Override
 			public void cancel(Object data) {
 				if (sessionId.equals(data)) {
-					queue.removeWatcher(this);
 					future.cancel(true);
 					finished = true;
 				}

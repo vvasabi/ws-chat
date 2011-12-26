@@ -30,9 +30,15 @@ public class UpdateQueue {
 	}
 
 	public synchronized void cancel(Object data) {
-		for (UpdateWatcher watcher : watchers) {
+		UpdateWatcher watcher = null;
+		Queue<UpdateWatcher> notFinished = new LinkedList<UpdateWatcher>();
+		while ((watcher = watchers.poll()) != null) {
 			watcher.cancel(data);
+			if (!watcher.isFinished()) {
+				notFinished.add(watcher);
+			}
 		}
+		watchers.addAll(notFinished);
 	}
 
 	public synchronized void addWathcer(UpdateWatcher watcher) {

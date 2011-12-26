@@ -377,7 +377,6 @@ function updateListOfClients() {
 			failCount++;
 			checkFailCount();
 		},
-		timeout: participantPollInterval,
 		dataType: 'json'
 	});
 }
