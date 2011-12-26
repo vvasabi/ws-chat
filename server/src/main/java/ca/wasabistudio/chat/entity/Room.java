@@ -122,6 +122,10 @@ public class Room implements Serializable {
 		return Collections.unmodifiableList(clients);
 	}
 
+	public boolean hasClient(Client client) {
+		return clients.contains(client);
+	}
+
 	public void addClient(Client client) {
 		RoomSetting setting = new RoomSetting(client, this);
 		setting.setLastMessage(getLastMessage());

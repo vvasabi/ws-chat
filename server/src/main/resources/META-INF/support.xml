@@ -8,7 +8,8 @@
 
 	<!-- Update Queues -->
 
-	<bean id="messageUpdateQueues" class="java.util.HashMap" />
+	<bean id="messageUpdateQueues"
+		class="java.util.concurrent.ConcurrentHashMap" />
 
 	<bean id="watcherRemovalService" class="java.util.concurrent.Executors"
 		factory-method="newScheduledThreadPool" destroy-method="shutdownNow">

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import ca.wasabistudio.chat.entity.Message;
 
@@ -19,6 +20,7 @@ public interface MessageRepository
 				"and m.username <> :username " +
 			"order by m.id"
 	)
+	@Transactional(readOnly=true)
 	List<Message> findMessagesByTime(
 		@Param("time") Date time,
 		@Param("roomKey") String roomKey,
@@ -32,6 +34,7 @@ public interface MessageRepository
 				"and m.username <> :username " +
 			"order by m.id"
 	)
+	@Transactional(readOnly=true)
 	List<Message> findMessagesByLastMessage(
 		@Param("id") int id,
 		@Param("roomKey") String roomKey,

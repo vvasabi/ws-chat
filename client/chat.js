@@ -4,7 +4,7 @@
  * @author wasabi
  */
 
-var API_VERSION = 1;
+var JS_VERSION = 1;
 var username = '';
 var url = '';
 var longPollTimeout = 75000; // 75 seconds
@@ -51,20 +51,15 @@ jQuery(window).load(function() {
 		url: 'config.json',
 		success: function(data) {
 			url = data.url;
-			checkAPIVersion(function(version) {
-				if (version > API_VERSION) {
-					var message = '已發現新版本，請重新整理頁面。';
-					postMessage(MessageType.ERROR, null, message);
-					return;
-				}
-
-				var message = '正在登入聊天室... ';
-				postMessage(MessageType.NOTICE, null, message);
-				getSessionId();
-			}, function() {
-				var message = '無法連上伺服器，請稍後再試。';
+			if (data.version > JS_VERSION) {
+				var message = '已發現新版本，請重新整理頁面。';
 				postMessage(MessageType.ERROR, null, message);
-			});
+				return;
+			}
+
+			var message = '正在登入聊天室... ';
+			postMessage(MessageType.NOTICE, null, message);
+			getSessionId();
 		},
 		error: function(xhr) {
 			var message = '無法讀取聊天室設定資料: ' + xhr.status;
@@ -177,15 +172,6 @@ jQuery(window).load(function() {
 function msie() {
 	var name = 'Internet Explorer';
 	return navigator.appName.indexOf(name) != -1;
-}
-
-function checkAPIVersion(success, error) {
-	jQuery.ajax({
-		url: url + 'info/api',
-		success: success,
-		error: error,
-		dataType: 'text'
-	});
 }
 
 var elementsHeight = 0;

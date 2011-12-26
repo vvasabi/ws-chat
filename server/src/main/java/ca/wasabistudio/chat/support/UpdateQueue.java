@@ -29,6 +29,12 @@ public class UpdateQueue {
 		watchers.addAll(notFinished);
 	}
 
+	public synchronized void cancel(Object data) {
+		for (UpdateWatcher watcher : watchers) {
+			watcher.cancel(data);
+		}
+	}
+
 	public synchronized void addWathcer(UpdateWatcher watcher) {
 		watchers.add(watcher);
 	}

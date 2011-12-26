@@ -63,6 +63,7 @@ public class RoomResource {
 	private ScheduledExecutorService scheduler;
 
 	private Session session;
+
 	private Map<String, UpdateQueue> messageUpdateQueues;
 
 	public void setSession(Session session) {
@@ -189,7 +190,7 @@ public class RoomResource {
 		// it's very important here to add a scheduled task that removes the
 		// watcher after timeout, so watcher does not get constantly added to
 		// the queue and cause memory leak
-		UpdateQueue queue = findOrCreateMessageUpdateQueue(room.getKey());
+		final UpdateQueue queue = findOrCreateMessageUpdateQueue(room.getKey());
 		WatcherRemovalTask task = new WatcherRemovalTask(queue);
 		final ScheduledFuture<?> future = scheduler.schedule(task,
 				LONG_POLLING_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -207,6 +208,15 @@ public class RoomResource {
 					future.cancel(true);
 					finished = true;
 					return;
+				}
+			}
+
+			@Override
+			public void cancel(Object data) {
+				if (sessionId.equals(data)) {
+					queue.removeWatcher(this);
+					future.cancel(true);
+					finished = true;
 				}
 			}
 
@@ -302,16 +312,19 @@ public class RoomResource {
 	@Path("exit/{room}")
 	public void exit(@PathParam("room") String roomKey,
 			@Context HttpServletRequest request) {
-		System.out.println("QUIT!");
 		String sessionId = request.getSession().getId();
 		Client client = getClient(sessionId);
 		Room room = roomRepo.findOne(roomKey);
 		exitRoom(room, client);
 
+		// remove the watcher
+		UpdateQueue queue = findOrCreateMessageUpdateQueue(roomKey);
+		queue.cancel(sessionId);
+
 		// now notify other people
 		Message message = new Message(client, room, Type.Exit);
 		saveMessage(room, client, message);
-		findOrCreateMessageUpdateQueue(roomKey).pushUpdate(null);
+		queue.pushUpdate(null);
 	}
 
 	@Transactional

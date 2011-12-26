@@ -19,6 +19,7 @@
 
 	<bean id="cron" class="ca.wasabistudio.chat.support.Cron" scope="prototype">
 		<property name="connector" ref="connector" />
+		<property name="messageUpdateQueues" ref="messageUpdateQueues" />
 	</bean>
 
 </beans>
