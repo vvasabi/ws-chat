@@ -23,6 +23,7 @@ var syncClientsInterval;
 
 // message types
 var MessageType = {
+	ACTION: 'Action',
 	REGULAR: 'Regular',
 	NOTICE: 'Notice',
 	ERROR: 'Error'
@@ -318,6 +319,10 @@ function postMessage(type, source, body, time) {
 	var element = currentTab.find('.messages');
 	var cssClass = '';
 	switch (type) {
+		case MessageType.ACTION:
+			cssClass = 'message-action';
+		break;
+
 		case MessageType.REGULAR:
 			cssClass = 'message-regular';
 		break;
@@ -331,6 +336,7 @@ function postMessage(type, source, body, time) {
 		break;
 	}
 
+	// escape html
 	var message = '';
 	var escaped = body;
 	while (escaped.search('<') != -1) {
@@ -341,6 +347,9 @@ function postMessage(type, source, body, time) {
 	}
 	if (type == MessageType.REGULAR) {
 		var message = '<span class="source">' + source + ':</span> ';
+		message += '<span class="body">' + escaped + '</span>';
+	} else if (type == MessageType.ACTION) {
+		var message = '<span class="source">' + source + ' </span>';
 		message += '<span class="body">' + escaped + '</span>';
 	} else {
 		var message = '<span class="body">' + escaped + '</span>';
@@ -407,11 +416,34 @@ function updateMessages() {
 		url: appendSession(url + 'room/info/' + key + '/messages'),
 		success: function(data) {
 			failCount = 0;
+
+			var entranceNotify = false;
+			var messageNotify = false;
 			if (data.length) {
 				for (var i in data) {
-					postMessage(MessageType.REGULAR, data[i].client, data[i].body);
+					switch (data[i].type) {
+						case 'Entrance':
+							handleEntranceMessage(data[i]);
+							entranceNotify = true;
+						break;
+
+						case 'Exit':
+							handleExitMessage(data[i]);
+						break;
+
+						case 'Regular':
+							handleRegularMessage(data[i]);
+							messageNotify = true;
+						break;
+					}
 				}
-				notify();
+
+				if (entranceNotify) {
+					notifyEntrance();
+				}
+				if (messageNotify) {
+					notifyMessage();
+				}
 			}
 
 			// start over right away
@@ -431,6 +463,18 @@ function updateMessages() {
 	});
 }
 
+function handleEntranceMessage(message) {
+	postMessage(MessageType.ACTION, message.client, "加入聊天室。");
+}
+
+function handleExitMessage(message) {
+	postMessage(MessageType.ACTION, message.client, "離開聊天室。");
+}
+
+function handleRegularMessage(message) {
+	postMessage(MessageType.REGULAR, message.client, message.body);
+}
+
 function createRoomTab() {
 	var roomTab = jQuery('<div />');
 	roomTab.addClass('room-tab');
@@ -445,10 +489,20 @@ function createRoomTab() {
 	return roomTab;
 }
 
-function notify() {
-	if (!windowFocused && jQuery('#notification-toggle').is(':checked')) {
-		jQuery('#notification')[0].play();
+function notifyEntrance() {
+	if (sendNotificationAudio()) {
+		jQuery('#entrance-notification')[0].play();
 	}
+}
+
+function notifyMessage() {
+	if (sendNotificationAudio()) {
+		jQuery('#message-notification')[0].play();
+	}
+}
+
+function sendNotificationAudio() {
+	return !windowFocused && jQuery('#notification-toggle').is(':checked');
 }
 
 function checkFailCount() {

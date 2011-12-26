@@ -7,6 +7,8 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,6 +25,10 @@ import org.codehaus.jackson.annotate.JsonProperty;
 	getterVisibility=JsonAutoDetect.Visibility.NONE)
 public class Message implements Serializable {
 
+	public static enum Type {
+		Regular, Entrance, Exit
+	}
+
 	private static final long serialVersionUID = 3635563826579404945L;
 
 	@Id
@@ -30,6 +36,11 @@ public class Message implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Access(AccessType.FIELD)
 	private Integer id;
+
+	@Column(name="type", length=10)
+	@Enumerated(EnumType.STRING)
+	@JsonProperty
+	private Type type;
 
 	@Column(name="body", length=300)
 	@JsonProperty
@@ -53,9 +64,17 @@ public class Message implements Serializable {
 
 	Message() {
 		id = 0;
+		type = Type.Regular;
 		body = "";
 		username = "";
 		createTime = new Date();
+	}
+
+	public Message(Client client, Room room, Type type) {
+		this();
+		this.username = client.getUsername();
+		this.roomKey = room.getKey();
+		this.type = type;
 	}
 
 	public Message(Client client, Room room, String body) {
@@ -67,6 +86,14 @@ public class Message implements Serializable {
 
 	public int getId() {
 		return id;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public String getBody() {

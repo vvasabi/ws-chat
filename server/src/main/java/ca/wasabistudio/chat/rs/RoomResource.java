@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ca.wasabistudio.chat.entity.Client;
 import ca.wasabistudio.chat.entity.Message;
+import ca.wasabistudio.chat.entity.Message.Type;
 import ca.wasabistudio.chat.entity.Room;
 import ca.wasabistudio.chat.entity.RoomSetting;
 import ca.wasabistudio.chat.repo.ClientRepository;
@@ -84,16 +85,31 @@ public class RoomResource {
 	@POST
 	@Path("/join/{room}")
 	@Produces("application/json")
-	@Transactional
 	public void joinRoom(@PathParam("room") String roomKey,
 			@Context HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		Client client = getClient(session.getId());
 		Room room = getRoom(roomKey);
 		if (room == null) {
-			room = new Room(roomKey);
-			roomRepo.save(room);
+			room = createRoom(roomKey);
 		}
+		joinRoom(room, client);
+
+		// now notify other people
+		Message message = new Message(client, room, Type.Entrance);
+		saveMessage(room, client, message);
+		findOrCreateMessageUpdateQueue(roomKey).pushUpdate(null);
+	}
+
+	@Transactional
+	private Room createRoom(String key) {
+		Room room = new Room(key);
+		roomRepo.save(room);
+		return room;
+	}
+
+	@Transactional
+	private void joinRoom(Room room, Client client) {
 		room.addClient(client);
 	}
 
@@ -284,18 +300,27 @@ public class RoomResource {
 
 	@POST
 	@Path("exit/{room}")
-	@Transactional
 	public void exit(@PathParam("room") String roomKey,
 			@Context HttpServletRequest request) {
 		System.out.println("QUIT!");
 		String sessionId = request.getSession().getId();
 		Client client = getClient(sessionId);
-
 		Room room = roomRepo.findOne(roomKey);
-		client.exitRoom(room);
+		exitRoom(room, client);
+
+		// now notify other people
+		Message message = new Message(client, room, Type.Exit);
+		saveMessage(room, client, message);
+		findOrCreateMessageUpdateQueue(roomKey).pushUpdate(null);
 	}
 
 	@Transactional
+	private void exitRoom(Room room, Client client) {
+		client.exitRoom(room);
+		clientRepo.save(client);
+		roomRepo.save(room);
+	}
+
 	private void storeNewMessage(String roomKey, String sessionId,
 			String messageBody) {
 		Room room = getRoom(roomKey);
@@ -304,8 +329,16 @@ public class RoomResource {
 		}
 		Client client = getClient(sessionId);
 		Message message = new Message(client, room, messageBody);
+		saveMessage(room, client, message);
+	}
+
+	@Transactional
+	private void saveMessage(Room room, Client client, Message message) {
 		client.addMessage(message);
 		room.addMessage(message);
+		clientRepo.save(client);
+		roomRepo.save(room);
+		messageRepo.save(message);
 	}
 
 	private Client getClient(String chatSessionId) {

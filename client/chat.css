@@ -71,6 +71,11 @@ form {
 	color: #666;
 }
 
+.message-action .source,
+.message-action .body {
+	color: #888;
+}
+
 .message-notice .body {
 	color: #00ccff;
 	font-size: 0.9em;

@@ -32,7 +32,7 @@
 				<div id="notification-control">
 					<input type="checkbox" id="notification-toggle"
 						checked="checked" />
-					<label for="notification-toggle">訊息音效</label>
+					<label for="notification-toggle">音效</label>
 				</div>
 				<form id="send-message-form">
 					<input id="message" type="text" disabled="disabled" />
@@ -40,7 +40,10 @@
 							disabled="disabled" />
 				</form>
 			</div>
-			<audio id="notification">
+			<audio id="entrance-notification">
+				<source src="audio/knock.wav" type="audio/wav" />
+			</audio>
+			<audio id="message-notification">
 				<source src="audio/ICQ-OOO.wav" type="audio/wav" />
 			</audio>
 		</div>
