@@ -295,7 +295,8 @@ function sendMessage(roomKey, message) {
 		},
 		data: {
 			body: message
-		}
+		},
+		contentType: 'application/x-www-form-urlencoded'
 	});
 }
 
