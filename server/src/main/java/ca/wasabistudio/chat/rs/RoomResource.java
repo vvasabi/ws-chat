@@ -1,5 +1,6 @@
 package ca.wasabistudio.chat.rs;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -307,22 +309,25 @@ public class RoomResource {
 	 * @param roomKey key of the chatroom to post to
 	 * @param message message to post
 	 * @return processed message
+	 * @throws UnsupportedEncodingException
 	 */
 	@POST
 	@Path("/info/{room}/messages")
 	@Produces("text/plain")
 	public String addMessage(@PathParam("room") String roomKey,
-			Message message, @Context HttpServletRequest request) {
-		if ("".equals(message.getBody())) {
+				@FormParam("body") String messageBody,
+				@Context HttpServletRequest request)
+			throws UnsupportedEncodingException {
+		if ((messageBody == null) || "".equals(messageBody)) {
 			throw new RequestErrorException("Message body cannot be empty.");
 		}
 
 		String sessionId = request.getSession().getId();
-		storeNewMessage(roomKey, sessionId, message.getBody());
+		storeNewMessage(roomKey, sessionId, messageBody);
 
 		// now notify the queue
 		findOrCreateMessageUpdateQueue(roomKey).pushUpdate(null);
-		return messageParser.process(message.getBody());
+		return messageParser.process(messageBody);
 	}
 
 	@POST

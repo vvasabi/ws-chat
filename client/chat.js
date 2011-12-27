@@ -284,13 +284,19 @@ function sendMessage(roomKey, message) {
 		type: 'POST',
 		url: appendSession(url + 'room/info/' + key + '/messages'),
 		success: function(formatted) {
-			postMessage(MessageType.REGULAR, username, formatted);
+			postMessage(MessageType.REGULAR, username, message);
+
+			// @TODO fix the character encoding issue from the server side
+			//postMessage(MessageType.REGULAR, username, formatted);
 		},
 		error: function(xhr, textStatus) {
 			var message = '無法送出訊息： ' + textStatus;
 			postMessage(MessageType.ERROR, null, message);
 		},
-		data: JSON.stringify({ body: message })
+		data: {
+			body: message
+		},
+		contentType: 'application/x-www-form-urlencoded'
 	});
 }
 
@@ -337,9 +343,25 @@ function postMessage(type, source, body, time) {
 	}
 	message += ' <span class="date">&mdash; ' + date.getHours() + ':';
 	message += date.getMinutes() + ':' + date.getSeconds() + '</span>';
-	element.append('<p class="' + cssClass + '">' + message + '</p>');
+
+	var paragraph = jQuery('<p class="' + cssClass + '">' + message + '</p>');
+	element.append(paragraph);
 	element.each(function() {
 		this.scrollTop = this.scrollHeight;
+	});
+
+	// allow links to be clickable
+	paragraph.find('a').click(function() {
+		var href = jQuery(this).attr('href');
+		if (!href) {
+			return false;
+		}
+
+		if (window.opener) {
+			window.opener.location = href;
+		}
+		window.open(href);
+		return false;
 	});
 }
 
