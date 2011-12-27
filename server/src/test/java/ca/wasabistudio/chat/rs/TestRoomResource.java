@@ -101,8 +101,7 @@ public class TestRoomResource {
 		resource2.setSession(session2);
 		HttpServletRequest request2 = new MockHttpServletRequest(httpSession2);
 		resource2.joinRoom("room", request2);
-		Message message = new Message(client, room, "test message");
-		resource2.addMessage("room", message, request2);
+		resource2.addMessage("room", "test message", request2);
 
 		// validate result now
 		try {
