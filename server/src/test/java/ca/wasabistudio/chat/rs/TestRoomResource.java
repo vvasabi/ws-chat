@@ -90,7 +90,6 @@ public class TestRoomResource {
 		em.getTransaction().begin();
 		Client client = new Client("test");
 		client.setChatSessionId(httpSession2.getId());
-		Room room = em.find(Room.class, "room");
 		em.persist(client);
 		em.getTransaction().commit();
 		em.close();
