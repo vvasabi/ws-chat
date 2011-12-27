@@ -283,20 +283,14 @@ function sendMessage(roomKey, message) {
 		contentType: 'application/json',
 		type: 'POST',
 		url: appendSession(url + 'room/info/' + key + '/messages'),
-		success: function(formatted) {
-			postMessage(MessageType.REGULAR, username, message);
-
-			// @TODO fix the character encoding issue from the server side
-			//postMessage(MessageType.REGULAR, username, formatted);
+		success: function(message) {
+			postMessage(MessageType.REGULAR, username, message.body);
 		},
 		error: function(xhr, textStatus) {
 			var message = '無法送出訊息： ' + textStatus;
 			postMessage(MessageType.ERROR, null, message);
 		},
-		data: {
-			body: message
-		},
-		contentType: 'application/x-www-form-urlencoded; charset=utf-8'
+		data: JSON.stringify({body: message})
 	});
 }
 

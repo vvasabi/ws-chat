@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -313,20 +312,21 @@ public class RoomResource {
 	 */
 	@POST
 	@Path("/info/{room}/messages")
-	@Produces("text/plain")
-	public String addMessage(@PathParam("room") String roomKey,
-				@FormParam("body") String messageBody,
+	@Produces("application/json")
+	public Message addMessage(@PathParam("room") String roomKey,
+				Message message,
 				@Context HttpServletRequest request) {
-		if ((messageBody == null) || "".equals(messageBody)) {
+		if ("".equals(message.getBody())) {
 			throw new RequestErrorException("Message body cannot be empty.");
 		}
 
 		String sessionId = request.getSession().getId();
-		storeNewMessage(roomKey, sessionId, messageBody);
+		message = storeNewMessage(roomKey, sessionId, message.getBody());
 
 		// now notify the queue
 		findOrCreateMessageUpdateQueue(roomKey).pushUpdate(null);
-		return messageParser.process(messageBody);
+		message.setBody(messageParser.process(message.getBody()));
+		return message;
 	}
 
 	@POST
@@ -355,7 +355,7 @@ public class RoomResource {
 		roomRepo.save(room);
 	}
 
-	private void storeNewMessage(String roomKey, String sessionId,
+	private Message storeNewMessage(String roomKey, String sessionId,
 			String messageBody) {
 		Room room = getRoom(roomKey);
 		if (room == null) {
@@ -363,16 +363,17 @@ public class RoomResource {
 		}
 		Client client = getClient(sessionId);
 		Message message = new Message(client, room, messageBody);
-		saveMessage(room, client, message);
+		return saveMessage(room, client, message);
 	}
 
 	@Transactional
-	private void saveMessage(Room room, Client client, Message message) {
+	private Message saveMessage(Room room, Client client, Message message) {
 		client.addMessage(message);
 		room.addMessage(message);
 		clientRepo.save(client);
 		roomRepo.save(room);
 		messageRepo.save(message);
+		return message;
 	}
 
 	private Client getClient(String chatSessionId) {

@@ -90,6 +90,7 @@ public class TestRoomResource {
 		em.getTransaction().begin();
 		Client client = new Client("test");
 		client.setChatSessionId(httpSession2.getId());
+		Room room = em.find(Room.class, "room");
 		em.persist(client);
 		em.getTransaction().commit();
 		em.close();
@@ -99,8 +100,9 @@ public class TestRoomResource {
 		RoomResource resource2 = context.getBean(RoomResource.class);
 		resource2.setSession(session2);
 		HttpServletRequest request2 = new MockHttpServletRequest(httpSession2);
+		Message message = new Message(client, room, "test message");
 		resource2.joinRoom("room", request2);
-		resource2.addMessage("room", "test message", request2);
+		resource2.addMessage("room", message, request2);
 
 		// validate result now
 		try {
