@@ -4,7 +4,7 @@
  * @author wasabi
  */
 
-var JS_VERSION = 1;
+var JS_VERSION = 89757; // build system enters correct value
 var username = '';
 var url = '';
 var longPollTimeout = 75000; // 75 seconds
@@ -283,8 +283,8 @@ function sendMessage(roomKey, message) {
 		contentType: 'application/json',
 		type: 'POST',
 		url: appendSession(url + 'room/info/' + key + '/messages'),
-		success: function() {
-			postMessage(MessageType.REGULAR, username, message);
+		success: function(formatted) {
+			postMessage(MessageType.REGULAR, username, formatted);
 		},
 		error: function(xhr, textStatus) {
 			var message = '無法送出訊息： ' + textStatus;
@@ -320,22 +320,15 @@ function postMessage(type, source, body, time) {
 	}
 
 	// escape html
-	var message = '';
-	var escaped = body;
-	while (escaped.search('<') != -1) {
-		escaped = escaped.replace('<', '&lt;');
-	}
-	while (escaped.search('>') != -1) {
-		escaped = escaped.replace('>', '&gt;');
-	}
+	var message;
 	if (type == MessageType.REGULAR) {
-		var message = '<span class="source">' + source + ':</span> ';
-		message += '<span class="body">' + escaped + '</span>';
+		message = '<span class="source">' + source + ':</span> ';
+		message += '<span class="body">' + body + '</span>';
 	} else if (type == MessageType.ACTION) {
-		var message = '<span class="source">' + source + ' </span>';
-		message += '<span class="body">' + escaped + '</span>';
+		message = '<span class="source">' + source + ' </span>';
+		message += '<span class="body">' + body + '</span>';
 	} else {
-		var message = '<span class="body">' + escaped + '</span>';
+		message = '<span class="body">' + body + '</span>';
 	}
 
 	var date = new Date();

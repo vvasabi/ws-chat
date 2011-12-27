@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response;
 import org.jboss.resteasy.annotations.Suspend;
 import org.jboss.resteasy.spi.AsynchronousResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ca.wasabistudio.chat.entity.Client;
@@ -39,6 +40,7 @@ import ca.wasabistudio.chat.support.SessionExpiredException;
 import ca.wasabistudio.chat.support.UpdateQueue;
 import ca.wasabistudio.chat.support.UpdateWatcher;
 import ca.wasabistudio.chat.support.WatcherRemovalTask;
+import ca.wasabistudio.chat.text.MessageParser;
 
 /**
  * REST services for working with chat rooms.
@@ -59,6 +61,9 @@ public class RoomResource {
 
 	@Autowired
 	private MessageRepository messageRepo;
+
+	@Autowired
+	private MessageParser messageParser;
 
 	private ScheduledExecutorService scheduler;
 
@@ -177,6 +182,7 @@ public class RoomResource {
 			// no checking for the result size because checking of the last
 			// message's id indicates the outcome already
 			List<Message> messages = loadMessages(room, sessionId);
+			processMessages(messages);
 			response.setResponse(Response.ok(messages).build());
 			return;
 		}
@@ -204,6 +210,7 @@ public class RoomResource {
 				finished = false;
 				List<Message> messages = loadMessages(room, sessionId);
 				if (messages.size() > 0) {
+					processMessages(messages);
 					response.setResponse(Response.ok(messages).build());
 					future.cancel(true);
 					finished = true;
@@ -232,7 +239,8 @@ public class RoomResource {
 
 			@Override
 			public Boolean call() throws Exception {
-				List<Message> result = new ArrayList<Message>();
+				// return an empty list of messages
+				List<Message> result = new ArrayList<Message>(0);
 				response.setResponse(Response.ok(result).build());
 				return true;
 			}
@@ -240,6 +248,13 @@ public class RoomResource {
 		});
 
 		queue.addWathcer(watcher);
+	}
+
+	@Transactional(propagation=Propagation.NEVER)
+	private void processMessages(List<Message> messages) {
+		for (Message message : messages) {
+			message.setBody(messageParser.process(message.getBody()));
+		}
 	}
 
 	private UpdateQueue findOrCreateMessageUpdateQueue(String roomKey) {
@@ -291,10 +306,12 @@ public class RoomResource {
 	 *
 	 * @param roomKey key of the chatroom to post to
 	 * @param message message to post
+	 * @return processed message
 	 */
 	@POST
 	@Path("/info/{room}/messages")
-	public void addMessage(@PathParam("room") String roomKey,
+	@Produces("text/plain")
+	public String addMessage(@PathParam("room") String roomKey,
 			Message message, @Context HttpServletRequest request) {
 		if ("".equals(message.getBody())) {
 			throw new RequestErrorException("Message body cannot be empty.");
@@ -305,6 +322,7 @@ public class RoomResource {
 
 		// now notify the queue
 		findOrCreateMessageUpdateQueue(roomKey).pushUpdate(null);
+		return messageParser.process(message.getBody());
 	}
 
 	@POST

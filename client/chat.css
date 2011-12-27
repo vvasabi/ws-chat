@@ -9,6 +9,16 @@ body {
 	padding: 0;
 }
 
+a {
+	color: #3cf;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #6cf;
+	text-decoration: underline;
+}
+
 form {
 	margin: 0;
 }

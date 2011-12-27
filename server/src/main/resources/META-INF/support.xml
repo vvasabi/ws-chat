@@ -16,4 +16,9 @@
 		<constructor-arg value="1" />
 	</bean>
 
+	<!-- Message Parser -->
+
+	<bean id="messageParser"
+		class="ca.wasabistudio.chat.text.MessageHtmlParser" />
+
 </beans>
