@@ -316,7 +316,8 @@ public class RoomResource {
 	@Produces("text/plain")
 	public String addMessage(@PathParam("room") String roomKey,
 				@FormParam("body") String messageBody,
-				@Context HttpServletRequest request) {
+				@Context HttpServletRequest request)
+				throws UnsupportedEncodingException {
 		if ((messageBody == null) || "".equals(messageBody)) {
 			throw new RequestErrorException("Message body cannot be empty.");
 		}
