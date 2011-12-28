@@ -290,7 +290,8 @@ function sendMessage(roomKey, message) {
 			var message = '無法送出訊息： ' + textStatus;
 			postMessage(MessageType.ERROR, null, message);
 		},
-		data: JSON.stringify({body: message})
+		data: JSON.stringify({body: message}),
+		dataType: 'json'
 	});
 }
 
