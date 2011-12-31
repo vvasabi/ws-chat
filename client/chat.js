@@ -354,7 +354,9 @@ function postMessage(type, source, body, time) {
 
 		if (window.opener) {
 			window.opener.location = href;
+			return false;
 		}
+
 		window.open(href);
 		return false;
 	});
