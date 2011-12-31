@@ -233,8 +233,8 @@ function setupServerSession() {
 }
 
 function userInit() {
-	enter(function(data) {
-		username = data;
+	enter(function(client) {
+		username = client.username;
 		jQuery('#client-username').val(username);
 
 		var roomKey = '大廳';

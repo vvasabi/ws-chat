@@ -67,9 +67,9 @@ public class ClientResource {
 	 */
 	@POST
 	@Path("/enter/{sessionId}")
-	@Produces("text/plain")
+	@Produces("application/json")
 	@Transactional
-	public String enter(@PathParam("sessionId") String sessionId,
+	public Client enter(@PathParam("sessionId") String sessionId,
 			@Context ServletConfig config,
 			@Context HttpServletRequest request) {
 		if ((sessionId == null) || "".equals(sessionId)) {
@@ -96,7 +96,7 @@ public class ClientResource {
 		client.sync();
 		clientRepo.save(client);
 		session.setClient(client);
-		return username;
+		return client;
 	}
 
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
