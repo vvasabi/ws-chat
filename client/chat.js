@@ -258,9 +258,15 @@ function enter(success) {
 		url: appendSession(url + 'client/enter/' + sid),
 		success: success,
 		error: function(xhr, textStatus) {
+			if (xhr.status == 403) {
+				postMessage(MessageType.ERROR, null, "請先登入論壇。");
+				return;
+			}
+
 			var message = '登入聊天室失敗： ' + xhr.status;
 			postMessage(MessageType.ERROR, null, message);
-		}
+		},
+		dataType: 'json'
 	});
 }
 
