@@ -289,8 +289,7 @@ public class RoomResource {
 		} else {
 			int lastMessageId = setting.getLastMessage().getId();
 			messages = messageRepo.findMessagesByLastMessage(lastMessageId,
-					room.getKey(),
-					client.getUsername());
+					room.getKey(), client.getUsername());
 		}
 
 		// update last message sync'ed
@@ -329,6 +328,28 @@ public class RoomResource {
 		return message;
 	}
 
+	private Message storeNewMessage(String roomKey, String sessionId,
+			String messageBody) {
+		Room room = getRoom(roomKey);
+		if (room == null) {
+			throw new RequestErrorException("Room cannot be found.");
+		}
+		Client client = getClient(sessionId);
+		Message message = new Message(client, room, messageBody);
+		return saveMessage(room, client, message);
+	}
+
+	@Transactional
+	private Message saveMessage(Room room, Client client, Message message) {
+		client.addMessage(message);
+		room.addMessage(message);
+		room.setLastMessage(message);
+		clientRepo.save(client);
+		roomRepo.save(room);
+		messageRepo.save(message);
+		return message;
+	}
+
 	@POST
 	@Path("exit/{room}")
 	public void exit(@PathParam("room") String roomKey,
@@ -353,27 +374,6 @@ public class RoomResource {
 		client.exitRoom(room);
 		clientRepo.save(client);
 		roomRepo.save(room);
-	}
-
-	private Message storeNewMessage(String roomKey, String sessionId,
-			String messageBody) {
-		Room room = getRoom(roomKey);
-		if (room == null) {
-			throw new RequestErrorException("Room cannot be found.");
-		}
-		Client client = getClient(sessionId);
-		Message message = new Message(client, room, messageBody);
-		return saveMessage(room, client, message);
-	}
-
-	@Transactional
-	private Message saveMessage(Room room, Client client, Message message) {
-		client.addMessage(message);
-		room.addMessage(message);
-		clientRepo.save(client);
-		roomRepo.save(room);
-		messageRepo.save(message);
-		return message;
 	}
 
 	private Client getClient(String chatSessionId) {
